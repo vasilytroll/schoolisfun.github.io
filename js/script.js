@@ -178,12 +178,13 @@ function openGame(url, gameName) {
     }
 }
 
-// Activate panic function
+// Panic
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
     setTimeout(() => {
-        window.location.href = "https://www.google.com";
+        // Redirects the current tab to Google Classroom
+        window.location.href = "https://classroom.google.com";
     }, 500);
 }
 
