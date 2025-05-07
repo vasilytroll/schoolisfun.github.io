@@ -124,7 +124,11 @@ function openGame(url, gameName) {
 // Panic logic
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
-    window.location.href = "https://www.google.com";
+    window.close();
+    // Fallback if window.close() fails (because it wasn't opened by JavaScript)
+    setTimeout(() => {
+        window.location.href = "https://www.google.com";
+    }, 100);
 }
 
 // Settings
@@ -213,4 +217,5 @@ document.addEventListener("DOMContentLoaded", () => {
     if (panicButton) panicButton.addEventListener("click", activatePanic);
     if (themeToggle) themeToggle.addEventListener("click", toggleTheme);
 });
+
 
