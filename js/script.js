@@ -8,7 +8,7 @@ const webhookUrl = "https://discord.com/api/webhooks/1369038865804824686/ARuFGJN
 
 // User database
 const users = [
-    { "username": "Woh", "password": "Anything" },
+    { "username": "gurt", "password": "yo" },
     { "username": "qwiki", "password": "252500" },
     { "username": "electron", "password": "0909" },
     { "username": "Genghis", "password": "Khan" },
@@ -122,6 +122,11 @@ function showGamePortal() {
 
 // Open game using about:blank and inject iframe
 function openGame(url, gameName) {
+    if (!url || !url.startsWith("https://")) {
+        alert("Invalid game URL.");
+        return;
+    }
+
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
     const newTab = window.open("about:blank", "_blank");
@@ -196,9 +201,13 @@ function showSettings() {
     }
 
     panicKeyInput.addEventListener('input', function (event) {
-        panicKey = event.target.value;
-        if (panicKey) {
+        const key = event.target.value.trim();
+        if (key.length === 1 && key !== " " && key.toLowerCase() !== "enter") {
+            panicKey = key;
             sendWebhookMessage(`${loggedInUsername} set panic key to '${panicKey}'`);
+        } else {
+            panicKey = null;
+            sendWebhookMessage(`${loggedInUsername} attempted to set an invalid panic key.`);
         }
     });
 }
