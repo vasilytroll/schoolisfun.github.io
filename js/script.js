@@ -124,11 +124,19 @@ function openGame(url, gameName) {
 // Panic logic
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
+    
+    // Attempt to close the window
     window.close();
-    // Fallback if window.close() fails (because it wasn't opened by JavaScript)
+
+    // If it fails, fallback: redirect to a "safe" page
     setTimeout(() => {
-        window.location.href = "https://www.google.com";
-    }, 100);
+        document.body.innerHTML = `
+            <div style="display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;font-family:sans-serif;">
+                <h2>🔒 You are now safe.</h2>
+                <p>Please close this tab manually.</p>
+            </div>
+        `;
+    }, 300);
 }
 
 // Settings
@@ -217,5 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (panicButton) panicButton.addEventListener("click", activatePanic);
     if (themeToggle) themeToggle.addEventListener("click", toggleTheme);
 });
+
 
 
