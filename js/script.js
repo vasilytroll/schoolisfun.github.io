@@ -120,14 +120,12 @@ function showGamePortal() {
     });
 }
 
-// ✅ FIXED: Open game using about:blank technique (embedding game via iframe)
+// ✅ FIXED: Open game (no reload issue)
 function openGame(url, gameName) {
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
-    // Open a new tab with about:blank
     const newTab = window.open("about:blank", "_blank");
     if (newTab) {
-        // Inject HTML that includes the game in an iframe
         const gameHtml = `
             <html>
                 <head>
@@ -166,7 +164,7 @@ function openGame(url, gameName) {
                 </head>
                 <body>
                     <div class="loader">Loading <strong>${gameName}</strong>...</div>
-                    <iframe src="" onload="this.previousElementSibling.style.display='none'; this.src='${url}';"></iframe>
+                    <iframe src="${url}" onload="document.querySelector('.loader').style.display='none';"></iframe>
                 </body>
             </html>
         `;
