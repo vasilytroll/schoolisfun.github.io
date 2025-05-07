@@ -8,7 +8,7 @@ const webhookUrl = "https://discord.com/api/webhooks/1369038865804824686/ARuFGJN
 
 // User database
 const users = [
-    { "username": "Woh", "password": "Anything" },
+    { "username": "gurt", "password": "yo" },
     { "username": "qwiki", "password": "252500" },
     { "username": "electron", "password": "0909" },
     { "username": "Genghis", "password": "Khan" },
