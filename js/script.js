@@ -14,6 +14,7 @@ const users = [
     { "username": "Genghis", "password": "Khan" },
     { "username": "Vas", "password": "vasisthebestcoder" },
     { "username": "greg", "password": "saker" }
+    { "username": "stoj", "password": "2508" }
 ]
 
 // DOM elements
