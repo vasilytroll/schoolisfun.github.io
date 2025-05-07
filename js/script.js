@@ -178,14 +178,10 @@ function openGame(url, gameName) {
     }
 }
 
-// Panic
+// Instant Panic (no fade)
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
-    document.body.classList.add('fade-out');
-    setTimeout(() => {
-        // Redirects the current tab to Google Classroom
-        window.location.href = "https://classroom.google.com";
-    }, 500);
+    window.location.href = "https://classroom.google.com";
 }
 
 // Show settings screen
