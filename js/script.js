@@ -15,7 +15,9 @@ const users = [
     { "username": "Vas", "password": "vasisthebestcoder" },
     { "username": "greg", "password": "saker" },
     { "username": "stoj", "password": "2508" }
-]
+];
+
+const adminUsers = ["qwiki", "Genghis", "Vas"];
 
 // DOM elements
 const welcomeContainer = document.getElementById('welcome-container');
@@ -35,8 +37,9 @@ const closeSettingsBtn = document.getElementById('close-settings-btn');
 const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
+const adminButton = document.getElementById('admin-button'); // Admin button
 
-// Send a webhook message with version suffix
+// Webhook sender
 function sendWebhookMessage(message) {
     const messageWithVersion = `${message} : version 4.6`;
     fetch(webhookUrl, {
@@ -46,7 +49,7 @@ function sendWebhookMessage(message) {
     }).catch(error => console.error("Webhook error:", error));
 }
 
-// Display login form and hide welcome button
+// Welcome button click
 function showLoginForm() {
     sendWebhookMessage('A user clicked "Welcome My Friend" button.');
     welcomeContainer.classList.add('fade-out');
@@ -57,7 +60,7 @@ function showLoginForm() {
     }, 500);
 }
 
-// Handle login submission
+// Handle login
 function submitLogin() {
     const email = emailInput.value;
     const password = passwordInput.value;
@@ -67,6 +70,12 @@ function submitLogin() {
     if (user) {
         loggedInUsername = user.username;
         sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
+
+        // Show admin button if user is admin
+        if (adminUsers.includes(loggedInUsername)) {
+            adminButton.style.display = 'block';
+            sendWebhookMessage(`${loggedInUsername} is an admin. Admin panel enabled.`);
+        }
 
         loginOverlay.classList.add('fade-out');
         setTimeout(() => {
@@ -84,7 +93,7 @@ function submitLogin() {
     }
 }
 
-// Show loading screen
+// Loading screen
 function showLoadingScreen() {
     loadingScreen.classList.remove('hidden');
     document.documentElement.style.setProperty('--bg-color', currentBgColor);
@@ -99,7 +108,7 @@ function showLoadingScreen() {
     }, 2000);
 }
 
-// Show the game portal after successful login
+// Game portal
 function showGamePortal() {
     sendWebhookMessage(`${loggedInUsername} reached game menu.`);
     inGameUI = true;
@@ -121,7 +130,7 @@ function showGamePortal() {
     });
 }
 
-// Open game using about:blank technique
+// Open game tab
 function openGame(url, gameName) {
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
@@ -176,7 +185,7 @@ function openGame(url, gameName) {
     }
 }
 
-// Activate panic function
+// Panic
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
@@ -185,7 +194,7 @@ function activatePanic() {
     }, 500);
 }
 
-// Show settings screen
+// Settings
 function showSettings() {
     sendWebhookMessage(`${loggedInUsername} opened settings.`);
     settingsScreen.classList.remove('hidden');
@@ -207,7 +216,6 @@ function showSettings() {
     });
 }
 
-// Close settings screen
 function closeSettings() {
     sendWebhookMessage(`${loggedInUsername} closed settings.`);
     settingsScreen.classList.add('fade-out');
@@ -217,7 +225,6 @@ function closeSettings() {
     }, 500);
 }
 
-// Change theme
 function changeTheme(theme) {
     document.body.classList.remove('light-theme', 'neon-theme');
     currentTheme = theme;
@@ -235,13 +242,21 @@ function changeTheme(theme) {
     sendWebhookMessage(`${loggedInUsername} changed theme to ${theme}.`);
 }
 
-// Toggle theme
 function toggleTheme() {
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
     changeTheme(nextTheme);
 }
 
-// Initialize
+// Admin Panel click
+if (adminButton) {
+    adminButton.addEventListener('click', () => {
+        sendWebhookMessage(`${loggedInUsername} clicked the Admin Panel button.`);
+        alert("Welcome to the Admin Panel, " + loggedInUsername + "!");
+        // Add custom admin panel logic here
+    });
+}
+
+// Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     welcomeButton.addEventListener('click', showLoginForm);
     loginButton.addEventListener('click', submitLogin);
