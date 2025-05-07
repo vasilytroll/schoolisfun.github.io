@@ -166,11 +166,7 @@ function openGame(url, gameName) {
 // Panic logic
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
-    document.body.classList.add("fade-out");
-    setTimeout(() => {
-        window.open("about:blank", "_self");
-        window.close();
-    }, 300);
+    window.close();
 }
 
 // Settings
