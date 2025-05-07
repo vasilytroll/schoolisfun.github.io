@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neutron Star</title>
+   <p>made by vas, qwqki, and genghis</p>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/neutron.css">
 </head>
 <body>
   <div class="welcome-container" id="welcome-container">
@@ -23,6 +24,8 @@
   <!-- Login Form -->
   <div id="login-overlay" class="login-overlay">
     <div class="login-container">
+      <span class="login-decoration"></span>
+      <span class="login-decoration"></span>
       <h2>Please Log In</h2>
       <div class="input-group">
         <i class="fas fa-user"></i>
@@ -32,7 +35,7 @@
         <i class="fas fa-lock"></i>
         <input type="password" id="password-input" placeholder="Enter password" />
       </div>
-      <button id="login-button" class="btn btn-primary">
+      <button id="login-button" class="login-btn">
         <i class="fas fa-sign-in-alt"></i> Log In
       </button>
     </div>
@@ -40,7 +43,9 @@
 
   <!-- Loading Screen -->
   <div id="loading-screen" class="loading-screen hidden">
-    <div class="loader"></div>
+    <div class="loader">
+      <div class="loader-inner"></div>
+    </div>
     <div class="loading-text">
       Please wait for <strong>Neutron Star</strong> to load...
     </div>
@@ -51,6 +56,7 @@
     <div id="settings-tab" class="settings-tab">
       <i class="fas fa-cog"></i> Settings
     </div>
+    
     
     <header class="portal-header">
       <h1>Neutron Star Games</h1>
@@ -214,35 +220,35 @@
       </div>
       
        <div class="game-card" data-url="https://games.voodoo.io/paperio2/" data-name="Paper.io">
-        <div class="game-icon"><i class="fas fa-apple-alt"></i></div>
+        <div class="game-icon"><i class="fas fa-draw-polygon"></i></div>
         <div class="game-info">
           <h3>Paper.io</h3>
-          <p>Paper.io we all played it hit</p>
+          <p>Capture territory in this multiplayer IO game</p>
         </div>
       </div>     
       
        <div class="game-card" data-url="https://sandboxels.r74n.com/" data-name="Sandboxles">
-        <div class="game-icon"><i class="fas fa-apple-alt"></i></div>
+        <div class="game-icon"><i class="fas fa-atom"></i></div>
         <div class="game-info">
           <h3>Sandboxles</h3>
-          <p>Sandboxles</p>
+          <p>Create and experiment with particle elements</p>
         </div>
       </div>  
       
        <div class="game-card" data-url="https://driftboss.io//" data-name="Drift Boss">
-        <div class="game-icon"><i class="fas fa-apple-alt"></i></div>
+        <div class="game-icon"><i class="fas fa-car"></i></div>
         <div class="game-info">
           <h3>Drift Boss</h3>
-          <p>Drift Boss</p>
+          <p>Master drifting techniques in this driving game</p>
         </div>
       </div>     
 
-      <!-- NEW: Classic Minecraft -->
+      <!-- Chill Guy Clicker -->
       <div class="game-card" data-url="https://chillguyclicker.io/" data-name="Chill Guy Clicker">
-        <div class="game-icon"><i class="fas fa-cube"></i></div>
+        <div class="game-icon"><i class="fas fa-hand-pointer"></i></div>
         <div class="game-info">
           <h3>Chill Guy Clicker</h3>
-          <p>Play Chill guy clicker</p>
+          <p>Click to earn points and unlock upgrades</p>
         </div>
       </div>
 
@@ -258,11 +264,6 @@
     <div class="settings-container">
       <h2><i class="fas fa-cog"></i> Settings</h2>
       
-      <div class="settings-group">
-        <label for="bg-color-picker">Background Color:</label>
-        <input type="color" id="bg-color-picker" value="#121212" />
-        <span class="color-preview"></span>
-      </div>
       
       <div class="settings-group">
         <label for="theme-selector">Theme:</label>
@@ -275,12 +276,15 @@
       
       <div class="settings-group">
         <label for="panic-key">Set Panic Key:</label>
-        <input type="text" id="panic-key" class="input-field" maxlength="1" placeholder="e.g. P" />
+        <input type="text" id="panic-key" maxlength="1" placeholder="e.g. P" />
       </div>
       
-      <button id="close-settings-btn" class="btn btn-primary">
-        <i class="fas fa-save"></i> Save & Close
-      </button>
+      <div class="settings-actions">
+        <button id="close-settings-btn" class="settings-cancel">Cancel</button>
+        <button id="save-settings-btn" class="settings-save">
+          <i class="fas fa-save"></i> Save
+        </button>
+      </div>
     </div>
   </div>
   
@@ -288,10 +292,12 @@
   <div id="error-message-template" class="hidden">
     <div class="error-message">
       <div class="error-container">
-        <i class="fas fa-exclamation-triangle"></i>
+        <div class="error-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
         <h3>Pop-up Blocked</h3>
         <p>Please allow pop-ups for this site to play games.</p>
-        <button class="btn btn-primary">Close</button>
+        <button class="error-btn">Close</button>
       </div>
     </div>
   </div>
