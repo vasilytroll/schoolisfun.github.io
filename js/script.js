@@ -57,12 +57,13 @@ userListBox.id = 'user-list-box';
 userListBox.style.display = 'none';
 userListBox.style.position = 'fixed';
 userListBox.style.top = '0';
-userListBox.style.left = '0';
+userListBox.style.right = '0';  // Changed to position it on the right
+userListBox.style.left = 'auto'; // Removed left
 userListBox.style.width = '250px';
 userListBox.style.height = '100vh';
 userListBox.style.backgroundColor = '#111';
 userListBox.style.color = '#0f0';
-userListBox.style.borderRight = '2px solid #0f0';
+userListBox.style.borderLeft = '2px solid #0f0';  // Border on the left
 userListBox.style.padding = '20px';
 userListBox.style.overflowY = 'auto';
 userListBox.innerHTML = `<h4>Online Users:</h4><ul id="user-list"></ul>`;
@@ -186,10 +187,10 @@ function activateAdminPanel() {
     });
 }
 
-// Update the user list box
+// Update the user list box dynamically
 function updateUserList() {
     const userList = document.getElementById('user-list');
-    userList.innerHTML = '';
+    userList.innerHTML = ''; // Clear the current list
 
     if (onlineUsers.length === 0) {
         userList.innerHTML = '<li>No users online.</li>';
@@ -200,6 +201,22 @@ function updateUserList() {
             userList.appendChild(li);
         });
     }
+}
+
+// Periodically update the online users list every 5 seconds
+setInterval(updateUserList, 5000);
+
+// Handle the user login and logout
+function handleUserLogin(user) {
+    // Add the logged-in user to the online users list if not already there
+    if (!onlineUsers.includes(user)) {
+        onlineUsers.push(user);
+    }
+}
+
+function handleUserLogout(user) {
+    // Remove the logged-out user from the online users list
+    onlineUsers = onlineUsers.filter(u => u !== user);
 }
 
 // Open game
