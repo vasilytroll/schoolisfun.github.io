@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Portal</title>
     <style>
-        /* Add your previous styles here */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -55,7 +54,93 @@
         .game-card:hover {
             background-color: #555;
         }
-        /* More styles... */
+        #settings-tab {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #fff;
+            color: #333;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #settings-screen {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .color-preview {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #000;
+            margin-top: 10px;
+        }
+        #admin-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            z-index: 9999;
+            display: none;
+        }
+        #user-list-box {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #fff;
+            color: #333;
+            border-left: 2px solid #ccc;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 10000;
+            display: none;
+        }
+        #user-list {
+            list-style: none;
+            padding: 0;
+        }
+        #user-list li {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        #close-panel-btn, #open-panel-btn {
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: monospace;
+            color: #0f0;
+            font-size: 1.5em;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -80,7 +165,6 @@
         <h1>Game Portal</h1>
         <div class="game-card" data-url="https://example.com/game1" data-name="Game 1">Game 1</div>
         <div class="game-card" data-url="https://example.com/game2" data-name="Game 2">Game 2</div>
-        <!-- Add more game cards here -->
     </div>
 
     <div id="settings-tab">Settings</div>
@@ -121,7 +205,6 @@
         // Global variables
         let currentBgColor = "#0a0e14";
         let currentTheme = "dark";
-        let inGameUI = false;
         let loggedInUsername = "";
         const webhookUrl = "https://discord.com/api/webhooks/1369038865804824686/ARuFGJNLGAA47UM9kqocFE6zlFmhPRyxAzEgsy1PM_4FNzktR0gmpJ3KVMuBSN957mpN";
         const githubJsonUrl = "https://raw.githubusercontent.com/vasilytroll/json2/refs/heads/main/users.json";
@@ -145,21 +228,12 @@
         const closeSettingsBtn = document.getElementById('close-settings-btn');
         const colorPreview = document.querySelector('.color-preview');
 
-        // Admin panel logic
+        // Admin panel elements
         const adminPanel = document.getElementById('admin-panel');
-        const openPanelBtn = document.getElementById('open-panel-btn');
-        const closePanelBtn = document.getElementById('close-panel-btn');
         const userListBox = document.getElementById('user-list-box');
         const userList = document.getElementById('user-list');
-
-        // Send webhook message
-        function sendWebhookMessage(message) {
-            fetch(webhookUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content: message })
-            }).catch(error => console.error("Webhook error:", error));
-        }
+        const openPanelBtn = document.getElementById('open-panel-btn');
+        const closePanelBtn = document.getElementById('close-panel-btn');
 
         // Fetch user data from GitHub
         async function fetchUsers() {
@@ -175,7 +249,6 @@
 
         // Show login form
         function showLoginForm() {
-            sendWebhookMessage('A user clicked "Welcome My Friend" button.');
             welcomeContainer.style.display = 'none';
             loginOverlay.style.display = 'flex';
             emailInput.focus();
@@ -193,115 +266,73 @@
                 if (!onlineUsers.includes(loggedInUsername)) {
                     onlineUsers.push(loggedInUsername);
                 }
-                sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
 
                 loginOverlay.style.display = 'none';
-                showLoadingScreen();
+                gamePortal.style.display = 'block';
+                fetchUsers();
             } else {
-                sendWebhookMessage(`Failed login attempt for ${email}: Incorrect password.`);
-                alert("Incorrect username or password!");
-                passwordInput.value = '';
-                passwordInput.placeholder = 'Enter password';
+                alert("Invalid username or password.");
             }
         }
 
-        // Show loading screen
-        function showLoadingScreen() {
-            loadingScreen.style.display = 'block';
-
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                showGamePortal();
-            }, 2000);
+        // Handle game portal card click
+        function openGamePortal(event) {
+            const gameUrl = event.target.dataset.url;
+            window.open(gameUrl, '_blank');
         }
 
-        // Show game portal
-        function showGamePortal() {
-            sendWebhookMessage(`${loggedInUsername} reached game menu.`);
-            inGameUI = true;
-            gamePortal.style.display = 'block';
-
-            if (loggedInUsername.toLowerCase() === 'admin') {
-                adminPanel.style.display = 'block';
-            }
-
-            const gameCards = document.querySelectorAll('.game-card');
-            gameCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const gameUrl = card.getAttribute('data-url');
-                    const gameName = card.getAttribute('data-name');
-                    openGame(gameUrl, gameName);
-                });
-            });
-
-            document.addEventListener('keydown', function (event) {
-                if (inGameUI && panicKeyInput.value && event.key.toLowerCase() === panicKeyInput.value.toLowerCase()) {
-                    activatePanic();
-                }
-            });
+        // Show settings screen
+        function openSettings() {
+            settingsScreen.style.display = 'block';
         }
 
-        // Activate admin panel
-        openPanelBtn.addEventListener('click', () => {
-            userListBox.style.display = userListBox.style.display === 'none' ? 'block' : 'none';
-            openPanelBtn.textContent = userListBox.style.display === 'none' ? 'Open Panel' : 'Close Panel';
-            if (userListBox.style.display === 'block') updateUserList();
-        });
+        // Close settings screen
+        function closeSettings() {
+            settingsScreen.style.display = 'none';
+        }
 
-        // Update the user list box
-        function updateUserList() {
-            userList.innerHTML = '';
+        // Save settings
+        function saveSettings() {
+            currentBgColor = bgColorPicker.value;
+            currentTheme = themeSelector.value;
+            document.body.style.backgroundColor = currentBgColor;
+            document.body.className = currentTheme;
+            closeSettings();
+        }
 
-            if (onlineUsers.length === 0) {
-                userList.innerHTML = '<li>No users online.</li>';
-            } else {
-                onlineUsers.forEach(user => {
-                    const li = document.createElement('li');
-                    li.textContent = user;
-
-                    const kickButton = document.createElement('button');
-                    kickButton.textContent = 'Kick';
-                    kickButton.style.marginLeft = '10px';
-                    kickButton.addEventListener('click', () => kickUser(user));
-
-                    li.appendChild(kickButton);
-                    userList.appendChild(li);
-                });
+        // Handle panic key
+        function triggerPanicMode() {
+            const panicKey = panicKeyInput.value;
+            if (panicKey === "panic") {
+                alert("Panic mode triggered!");
             }
         }
 
-        // Kick user function
-        function kickUser(username) {
-            sendWebhookMessage(`${loggedInUsername} kicked ${username} from the website.`);
-            onlineUsers = onlineUsers.filter(user => user !== username);
-            updateUserList();
+        // Handle admin panel opening
+        function openAdminPanel() {
+            adminPanel.style.display = 'block';
+            userListBox.style.display = 'block';
+            const onlineUsersList = onlineUsers.map(user => `<li>${user}</li>`).join('');
+            userList.innerHTML = onlineUsersList;
         }
 
-        // Open game
-        function openGame(url, gameName) {
-            sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
-            const newTab = window.open(url, "_blank");
-            if (newTab) {
-                newTab.focus();
-            } else {
-                alert("Please allow popups for this site to play the game.");
-            }
-        }
-
-        // Panic function
-        function activatePanic() {
-            sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
-            window.location.href = "https://www.google.com";
+        // Handle admin panel closing
+        function closeAdminPanel() {
+            adminPanel.style.display = 'none';
+            userListBox.style.display = 'none';
         }
 
         // Event listeners
         welcomeButton.addEventListener('click', showLoginForm);
         loginButton.addEventListener('click', submitLogin);
+        openPanelBtn.addEventListener('click', openAdminPanel);
+        closePanelBtn.addEventListener('click', closeAdminPanel);
+        settingsTab.addEventListener('click', openSettings);
+        closeSettingsBtn.addEventListener('click', closeSettings);
+        saveSettingsBtn.addEventListener('click', saveSettings);
 
         // Fetch users on page load
-        fetchUsers();
-
+        window.onload = fetchUsers;
     </script>
-
 </body>
 </html>
