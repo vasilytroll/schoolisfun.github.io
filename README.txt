@@ -1,4 +1,4 @@
-Hello, we are the devs or developers of NueutronStar, we do not condone playing games in school.
+Hello, we are the devs or developers of NeutronStar, we do not condone playing games in school.
 We do not condone any malicious behavior, such as proxies.
 Our website is meant to be a game hub for entertainment purposes only.
 Notice:
