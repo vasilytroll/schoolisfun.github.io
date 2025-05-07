@@ -31,7 +31,6 @@ a chrome/google file that you can accsess)
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Click to Open Link</title>
     <style>
-        /* Style to center the text in the middle of the screen */
         body, html {
             height: 100%;
             margin: 0;
