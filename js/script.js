@@ -13,7 +13,7 @@ const users = [
     { "username": "electron", "password": "0909" },
     { "username": "Genghis", "password": "Khan" },
     { "username": "Vas", "password": "vasisthebestcoder" },
-    { "username": "greg", "password": "saker" }
+    { "username": "greg", "password": "saker" },
     { "username": "stoj", "password": "2508" }
 ]
 
