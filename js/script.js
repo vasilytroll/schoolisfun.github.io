@@ -37,7 +37,8 @@ const closeSettingsBtn = document.getElementById('close-settings-btn');
 const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
-const adminButton = document.getElementById('admin-button'); // Admin button
+const adminButton = document.getElementById('admin-button');
+const adminPanel = document.getElementById('admin-panel');
 
 // Webhook sender
 function sendWebhookMessage(message) {
@@ -47,6 +48,11 @@ function sendWebhookMessage(message) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: messageWithVersion })
     }).catch(error => console.error("Webhook error:", error));
+}
+
+// Check if user is admin
+function isAdmin() {
+    return adminUsers.includes(loggedInUsername);
 }
 
 // Welcome button click
@@ -70,13 +76,6 @@ function submitLogin() {
     if (user) {
         loggedInUsername = user.username;
         sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
-
-        // Show admin button if user is admin
-        if (adminUsers.includes(loggedInUsername)) {
-            adminButton.style.display = 'block';
-            sendWebhookMessage(`${loggedInUsername} is an admin. Admin panel enabled.`);
-        }
-
         loginOverlay.classList.add('fade-out');
         setTimeout(() => {
             loginOverlay.style.display = 'none';
@@ -113,6 +112,12 @@ function showGamePortal() {
     sendWebhookMessage(`${loggedInUsername} reached game menu.`);
     inGameUI = true;
     gamePortal.classList.remove('hidden');
+
+    if (isAdmin()) {
+        adminButton.style.display = 'block';
+    } else {
+        adminButton.style.display = 'none';
+    }
 
     const gameCards = document.querySelectorAll('.game-card');
     gameCards.forEach(card => {
@@ -198,15 +203,11 @@ function activatePanic() {
 function showSettings() {
     sendWebhookMessage(`${loggedInUsername} opened settings.`);
     settingsScreen.classList.remove('hidden');
-
     bgColorPicker.value = currentBgColor;
     colorPreview.style.backgroundColor = currentBgColor;
-
     themeSelector.value = currentTheme;
 
-    if (panicKey) {
-        panicKeyInput.value = panicKey;
-    }
+    if (panicKey) panicKeyInput.value = panicKey;
 
     panicKeyInput.addEventListener('input', function (event) {
         panicKey = event.target.value;
@@ -247,12 +248,18 @@ function toggleTheme() {
     changeTheme(nextTheme);
 }
 
-// Admin Panel click
+// Admin Panel
 if (adminButton) {
     adminButton.addEventListener('click', () => {
-        sendWebhookMessage(`${loggedInUsername} clicked the Admin Panel button.`);
-        alert("Welcome to the Admin Panel, " + loggedInUsername + "!");
-        // Add custom admin panel logic here
+        if (isAdmin()) {
+            sendWebhookMessage(`${loggedInUsername} clicked the Admin Panel button.`);
+            alert("Welcome to the Admin Panel, " + loggedInUsername + "!");
+            if (adminPanel) {
+                adminPanel.classList.remove('hidden');
+            }
+        } else {
+            alert("Access denied. You are not an admin.");
+        }
     });
 }
 
