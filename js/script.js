@@ -11,7 +11,7 @@ const githubJsonUrl = "https://raw.githubusercontent.com/vasilytroll/json2/refs/
 
 // User database
 let users = [];
-let onlineUsers = []; // To keep track of online users
+let onlineUsers = [];
 
 // DOM elements
 const welcomeContainer = document.getElementById('welcome-container');
@@ -32,7 +32,7 @@ const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
 
-// Admin dashboard elements (create it dynamically)
+// Admin dashboard elements
 const adminPanel = document.createElement('div');
 adminPanel.id = 'admin-panel';
 adminPanel.style.display = 'none';
@@ -40,32 +40,56 @@ adminPanel.style.position = 'fixed';
 adminPanel.style.top = '20px';
 adminPanel.style.right = '20px';
 adminPanel.style.padding = '20px';
-adminPanel.style.backgroundColor = '#222';
-adminPanel.style.color = '#fff';
-adminPanel.style.border = '2px solid #0f0';
+adminPanel.style.backgroundColor = '#f0f0f0';
+adminPanel.style.color = '#333';
+adminPanel.style.border = '2px solid #ccc';
 adminPanel.style.borderRadius = '10px';
+adminPanel.style.zIndex = '9999';
 adminPanel.innerHTML = `
     <h3>Admin Panel</h3>
     <p>Welcome, Admin!</p>
-    <button id="open-panel-btn">Open Panel</button>
+    <button id="open-panel-btn" style="
+        padding: 10px 20px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    ">Open Panel</button>
 `;
 document.body.appendChild(adminPanel);
 
-// User List Box (create it dynamically)
+// User List Box
 const userListBox = document.createElement('div');
 userListBox.id = 'user-list-box';
 userListBox.style.display = 'none';
 userListBox.style.position = 'fixed';
 userListBox.style.top = '0';
-userListBox.style.left = '0';
+userListBox.style.right = '0';  // RIGHT SIDE now
 userListBox.style.width = '250px';
 userListBox.style.height = '100vh';
-userListBox.style.backgroundColor = '#111';
-userListBox.style.color = '#0f0';
-userListBox.style.borderRight = '2px solid #0f0';
+userListBox.style.backgroundColor = '#fff';
+userListBox.style.color = '#333';
+userListBox.style.borderLeft = '2px solid #ccc';
 userListBox.style.padding = '20px';
 userListBox.style.overflowY = 'auto';
-userListBox.innerHTML = `<h4>Online Users:</h4><ul id="user-list"></ul>`;
+userListBox.style.zIndex = '10000';  // Always on top
+userListBox.innerHTML = `
+    <button id="close-panel-btn" style="
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        background: #eee;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    ">Close Panel</button>
+    <h4 style="margin-top: 0;">Online Users:</h4>
+    <ul id="user-list" style="list-style: none; padding: 0;"></ul>
+`;
 document.body.appendChild(userListBox);
 
 // Send webhook message
@@ -113,7 +137,7 @@ function submitLogin() {
     if (user) {
         loggedInUsername = user.username;
         if (!onlineUsers.includes(loggedInUsername)) {
-            onlineUsers.push(loggedInUsername); // Add to online users
+            onlineUsers.push(loggedInUsername);
         }
         sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
 
@@ -180,9 +204,18 @@ function activateAdminPanel() {
     adminPanel.style.display = 'block';
 
     const openPanelBtn = document.getElementById('open-panel-btn');
+    const closePanelBtn = userListBox.querySelector('#close-panel-btn');
+
     openPanelBtn.addEventListener('click', () => {
-        userListBox.style.display = userListBox.style.display === 'none' ? 'block' : 'none';
-        updateUserList();
+        const isHidden = userListBox.style.display === 'none';
+        userListBox.style.display = isHidden ? 'block' : 'none';
+        openPanelBtn.textContent = isHidden ? 'Close Panel' : 'Open Panel';
+        if (isHidden) updateUserList();
+    });
+
+    closePanelBtn.addEventListener('click', () => {
+        userListBox.style.display = 'none';
+        openPanelBtn.textContent = 'Open Panel';
     });
 }
 
