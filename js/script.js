@@ -15,7 +15,7 @@ const users = [
     { "username": "Vas", "password": "vasisthebestcoder" },
     { "username": "greg", "password": "saker" },
     { "username": "stoj", "password": "2508" }
-];
+]
 
 // DOM elements
 const welcomeContainer = document.getElementById('welcome-container');
@@ -36,12 +36,13 @@ const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
 
-// Send a webhook message
+// Send a webhook message with version suffix
 function sendWebhookMessage(message) {
+    const messageWithVersion = `${message} : version 4.6`;
     fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: message })
+        body: JSON.stringify({ content: messageWithVersion })
     }).catch(error => console.error("Webhook error:", error));
 }
 
@@ -120,59 +121,54 @@ function showGamePortal() {
     });
 }
 
-// Open game using about:blank and inject iframe
+// Open game using about:blank technique
 function openGame(url, gameName) {
-    if (!url || !url.startsWith("https://")) {
-        alert("Invalid game URL.");
-        return;
-    }
-
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
     const newTab = window.open("about:blank", "_blank");
     if (newTab) {
         const gameHtml = `
-        <html>
-            <head>
-                <title>${gameName}</title>
-                <style>
-                    body {
-                        margin: 0;
-                        background: #000;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 100vh;
-                        overflow: hidden;
-                    }
-                    .loader {
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        transform: translate(-50%, -50%);
-                        font-family: monospace;
-                        color: #0f0;
-                        font-size: 1.5em;
-                        animation: blink 1s infinite;
-                    }
-                    iframe {
-                        border: none;
-                        width: 100vw;
-                        height: 100vh;
-                    }
-                    @keyframes blink {
-                        0% { opacity: 1; }
-                        50% { opacity: 0; }
-                        100% { opacity: 1; }
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="loader">Loading <strong>${gameName}</strong>...</div>
-                <iframe src="${url}" onload="document.querySelector('.loader').style.display='none';"></iframe>
-            </body>
-        </html>
-        `;
+    <html>
+        <head>
+            <title>${gameName}</title>
+            <style>
+                body {
+                    margin: 0;
+                    background: #000;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    overflow: hidden;
+                }
+                .loader {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-family: monospace;
+                    color: #0f0;
+                    font-size: 1.5em;
+                    animation: blink 1s infinite;
+                }
+                iframe {
+                    border: none;
+                    width: 100vw;
+                    height: 100vh;
+                }
+                @keyframes blink {
+                    0% { opacity: 1; }
+                    50% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="loader">Loading <strong>${gameName}</strong>...</div>
+            <iframe src="${url}" onload="document.querySelector('.loader').style.display='none';"></iframe>
+        </body>
+    </html>
+`;
         newTab.document.write(gameHtml);
         newTab.document.close();
     } else {
@@ -180,10 +176,13 @@ function openGame(url, gameName) {
     }
 }
 
-// Panic button — redirect in same tab immediately
+// Activate panic function
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
-    window.location.replace("https://classroom.google.com");
+    document.body.classList.add('fade-out');
+    setTimeout(() => {
+        window.location.href = "https://www.google.com";
+    }, 500);
 }
 
 // Show settings screen
@@ -201,13 +200,9 @@ function showSettings() {
     }
 
     panicKeyInput.addEventListener('input', function (event) {
-        const key = event.target.value.trim();
-        if (key.length === 1 && key !== " " && key.toLowerCase() !== "enter") {
-            panicKey = key;
+        panicKey = event.target.value;
+        if (panicKey) {
             sendWebhookMessage(`${loggedInUsername} set panic key to '${panicKey}'`);
-        } else {
-            panicKey = null;
-            sendWebhookMessage(`${loggedInUsername} attempted to set an invalid panic key.`);
         }
     });
 }
