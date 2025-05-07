@@ -57,8 +57,136 @@
     </header>
 
     <div class="game-grid">
-      <!-- Game cards go here... (already included above) -->
-      <!-- KEEP all your existing game cards here -->
+      <div class="game-card" data-url="https://archive.org/details/stick-rpg-complete" data-name="Stick RPG">
+        <div class="game-icon"><i class="fas fa-user-alt"></i></div>
+        <div class="game-info">
+          <h3>Stick RPG</h3>
+          <p>Create your own stick figure adventure</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://1games.io/game/monkey-mart/" data-name="Monkey Mart">
+        <div class="game-icon"><i class="fas fa-store"></i></div>
+        <div class="game-info">
+          <h3>Monkey Mart</h3>
+          <p>Run your own monkey marketplace</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://eaglercraft.com" data-name="Minecraft">
+        <div class="game-icon"><i class="fas fa-cubes"></i></div>
+        <div class="game-info">
+          <h3>Minecraft</h3>
+          <p>Build and explore in this block universe</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://onlinegames.io" data-name="OnlineGames">
+        <div class="game-icon"><i class="fas fa-gamepad"></i></div>
+        <div class="game-info">
+          <h3>OnlineGames</h3>
+          <p>A collection of simple online games</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://sz-games.github.io" data-name="Sz Games">
+        <div class="game-icon"><i class="fas fa-dice"></i></div>
+        <div class="game-info">
+          <h3>Sz Games</h3>
+          <p>More simple online games</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://slopeonline.online/" data-name="Slope">
+        <div class="game-icon"><i class="fas fa-mountain"></i></div>
+        <div class="game-info">
+          <h3>Slope</h3>
+          <p>Roll down an endless slope avoiding obstacles</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://retrobowl.me" data-name="Retro Bowl">
+        <div class="game-icon"><i class="fas fa-football-ball"></i></div>
+        <div class="game-info">
+          <h3>Retro Bowl</h3>
+          <p>A retro football game</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://gamesfrog.com/games/madden" data-name="Madden 7">
+        <div class="game-icon"><i class="fas fa-football-ball"></i></div>
+        <div class="game-info">
+          <h3>Madden 7</h3>
+          <p>Play Madden 7 online</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://crazycattle3dgame.github.io/" data-name="Crazy Cattle 3D">
+        <div class="game-icon"><i class="fas fa-cow"></i></div>
+        <div class="game-info">
+          <h3>Crazy Cattle 3D</h3>
+          <p>Navigate through a 3D world as a crazy cattle</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://www.miniplay.com/game/plants-vs-zombies" data-name="Plants vs Zombies">
+        <div class="game-icon"><i class="fas fa-leaf"></i></div>
+        <div class="game-info">
+          <h3>Plants vs Zombies</h3>
+          <p>Defend your garden from zombies</p>
+        </div>
+      </div>
+
+      <!-- New Games -->
+      <div class="game-card" data-url="https://flappybird.io/" data-name="Flappy Bird">
+        <div class="game-icon"><i class="fas fa-dove"></i></div>
+        <div class="game-info">
+          <h3>Flappy Bird</h3>
+          <p>Fly the bird through pipes without crashing</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://play2048.co/" data-name="2048">
+        <div class="game-icon"><i class="fas fa-th-large"></i></div>
+        <div class="game-info">
+          <h3>2048</h3>
+          <p>Combine numbers to reach the 2048 tile</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://orteil.dashnet.org/cookieclicker/" data-name="Cookie Clicker">
+        <div class="game-icon"><i class="fas fa-cookie"></i></div>
+        <div class="game-info">
+          <h3>Cookie Clicker</h3>
+          <p>Bake as many cookies as you can</p>
+        </div>
+      </div>
+
+      <!-- Your requested new games -->
+      <div class="game-card" data-url="https://eggy-car.github.io/" data-name="Eggy Car">
+        <div class="game-icon"><i class="fas fa-egg"></i></div>
+        <div class="game-info">
+          <h3>Eggy Car</h3>
+          <p>Drive carefully while balancing your egg</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://gamesuperhot.github.io/" data-name="Superhot">
+        <div class="game-icon"><i class="fas fa-crosshairs"></i></div>
+        <div class="game-info">
+          <h3>Superhot</h3>
+          <p>A unique FPS where time moves when you do</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://blockblastonline.com/" data-name="Block Blast (Old)">
+        <div class="game-icon"><i class="fas fa-th"></i></div>
+        <div class="game-info">
+          <h3>Block Blast (Old)</h3>
+          <p>A classic block puzzle game</p>
+        </div>
+      </div>
+
     </div>
 
     <button id="panic-button" class="panic-button">
@@ -108,24 +236,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Admin Panel Button -->
-  <button id="admin-button" style="
-    display: none;
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 9999;
-    background-color: #333;
-    color: #fff;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-  ">
-    Admin Panel
-  </button>
 
   <script src="js/script.js"></script>
 </body>
