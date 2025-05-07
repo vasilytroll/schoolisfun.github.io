@@ -212,11 +212,13 @@ function handleUserLogin(user) {
     if (!onlineUsers.includes(user)) {
         onlineUsers.push(user);
     }
+    updateUserList();  // Update the user list every time a new user logs in
 }
 
 function handleUserLogout(user) {
     // Remove the logged-out user from the online users list
     onlineUsers = onlineUsers.filter(u => u !== user);
+    updateUserList();  // Update the user list every time a user logs out
 }
 
 // Open game
@@ -283,6 +285,43 @@ function activatePanic() {
     }, 500);
 }
 
+// Save settings
+function saveSettings() {
+    // Get new settings from inputs (such as theme, background color, etc.)
+    const selectedBgColor = bgColorPicker.value;
+    const selectedTheme = themeSelector.value;
+    const enteredPanicKey = panicKeyInput.value;
+
+    // Save settings (you can store them locally, or you can save them in a server/database)
+    currentBgColor = selectedBgColor;
+    currentTheme = selectedTheme;
+    panicKey = enteredPanicKey;
+
+    // Update the UI based on new settings
+    document.documentElement.style.setProperty('--bg-color', currentBgColor);
+
+    // Apply theme
+    if (currentTheme === 'light') {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+    } else {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+    }
+
+    // Close settings after saving
+    closeSettings();
+
+    // Send a webhook with the settings update
+    sendWebhookMessage(`${loggedInUsername} updated settings: BG Color = ${currentBgColor}, Theme = ${currentTheme}`);
+}
+
+// Attach save settings event
+const saveSettingsBtn = document.getElementById('save-settings-btn');
+if (saveSettingsBtn) {
+    saveSettingsBtn.addEventListener('click', saveSettings);
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     fetchUsers();
@@ -303,7 +342,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (settingsTab) settingsTab.addEventListener('click', showSettings);
     if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
-    if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveSettings);
 
     if (panicButton) panicButton.addEventListener('click', activatePanic);
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
