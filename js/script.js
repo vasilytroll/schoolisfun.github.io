@@ -15,7 +15,7 @@ const users = [
     { "username": "Vas", "password": "vasisthebestcoder" },
     { "username": "greg", "password": "saker" },
     { "username": "stoj", "password": "2508" }
-]
+];
 
 // DOM elements
 const welcomeContainer = document.getElementById('welcome-container');
@@ -120,57 +120,54 @@ function showGamePortal() {
     });
 }
 
-// ✅ FIXED: Open game using about:blank technique (embedding game via iframe)
+// Open game using about:blank and inject iframe
 function openGame(url, gameName) {
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
-    // Open a new tab with about:blank
     const newTab = window.open("about:blank", "_blank");
     if (newTab) {
-        // Inject HTML that includes the game in an iframe
         const gameHtml = `
-    <html>
-        <head>
-            <title>${gameName}</title>
-            <style>
-                body {
-                    margin: 0;
-                    background: #000;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100vh;
-                    overflow: hidden;
-                }
-                .loader {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    font-family: monospace;
-                    color: #0f0;
-                    font-size: 1.5em;
-                    animation: blink 1s infinite;
-                }
-                iframe {
-                    border: none;
-                    width: 100vw;
-                    height: 100vh;
-                }
-                @keyframes blink {
-                    0% { opacity: 1; }
-                    50% { opacity: 0; }
-                    100% { opacity: 1; }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="loader">Loading <strong>${gameName}</strong>...</div>
-            <iframe src="${url}" onload="document.querySelector('.loader').style.display='none';"></iframe>
-        </body>
-    </html>
-`;
-
+        <html>
+            <head>
+                <title>${gameName}</title>
+                <style>
+                    body {
+                        margin: 0;
+                        background: #000;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        overflow: hidden;
+                    }
+                    .loader {
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        font-family: monospace;
+                        color: #0f0;
+                        font-size: 1.5em;
+                        animation: blink 1s infinite;
+                    }
+                    iframe {
+                        border: none;
+                        width: 100vw;
+                        height: 100vh;
+                    }
+                    @keyframes blink {
+                        0% { opacity: 1; }
+                        50% { opacity: 0; }
+                        100% { opacity: 1; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="loader">Loading <strong>${gameName}</strong>...</div>
+                <iframe src="${url}" onload="document.querySelector('.loader').style.display='none';"></iframe>
+            </body>
+        </html>
+        `;
         newTab.document.write(gameHtml);
         newTab.document.close();
     } else {
@@ -178,10 +175,10 @@ function openGame(url, gameName) {
     }
 }
 
-// Instant Panic (no fade)
+// Panic button — redirect in same tab immediately
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
-    window.location.href = "https://classroom.google.com";
+    window.location.replace("https://classroom.google.com");
 }
 
 // Show settings screen
@@ -234,7 +231,7 @@ function changeTheme(theme) {
     sendWebhookMessage(`${loggedInUsername} changed theme to ${theme}.`);
 }
 
-// Toggle theme (optional)
+// Toggle theme
 function toggleTheme() {
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
     changeTheme(nextTheme);
