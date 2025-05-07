@@ -9,7 +9,7 @@ const webhookUrl = "https://discord.com/api/webhooks/1369038865804824686/ARuFGJN
 // GitHub Raw JSON URL containing user data
 const githubJsonUrl = "https://raw.githubusercontent.com/vasilytroll/json2/refs/heads/main/users.json";
 
-// User database (empty initially, populated by fetch)
+// User database
 let users = [];
 
 // DOM elements
@@ -31,7 +31,26 @@ const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
 
-// Send a webhook message
+// Admin dashboard elements (create it dynamically)
+const adminPanel = document.createElement('div');
+adminPanel.id = 'admin-panel';
+adminPanel.style.display = 'none';
+adminPanel.style.position = 'fixed';
+adminPanel.style.top = '20px';
+adminPanel.style.right = '20px';
+adminPanel.style.padding = '20px';
+adminPanel.style.backgroundColor = '#222';
+adminPanel.style.color = '#fff';
+adminPanel.style.border = '2px solid #0f0';
+adminPanel.style.borderRadius = '10px';
+adminPanel.innerHTML = `
+    <h3>Admin Panel</h3>
+    <p>Welcome, Admin!</p>
+    <button id="admin-logout">Logout Admin</button>
+`;
+document.body.appendChild(adminPanel);
+
+// Send webhook message
 function sendWebhookMessage(message) {
     fetch(webhookUrl, {
         method: "POST",
@@ -45,14 +64,14 @@ async function fetchUsers() {
     try {
         const response = await fetch(githubJsonUrl);
         const data = await response.json();
-        users = data.users;  // Assume the JSON structure contains a "users" array
+        users = data.users;
         console.log('Users fetched:', users);
     } catch (error) {
         console.error("Failed to fetch users:", error);
     }
 }
 
-// Display login form and hide welcome button
+// Show login form
 function showLoginForm() {
     sendWebhookMessage('A user clicked "Welcome My Friend" button.');
     welcomeContainer.classList.add('fade-out');
@@ -66,7 +85,7 @@ function showLoginForm() {
     }, 500);
 }
 
-// Handle login submission
+// Handle login
 function submitLogin() {
     const email = emailInput.value;
     const password = passwordInput.value;
@@ -108,11 +127,15 @@ function showLoadingScreen() {
     }, 2000);
 }
 
-// Show the game portal after successful login
+// Show game portal
 function showGamePortal() {
     sendWebhookMessage(`${loggedInUsername} reached game menu.`);
     inGameUI = true;
     gamePortal.classList.remove('hidden');
+
+    if (loggedInUsername.toLowerCase() === 'qwiki') {
+        activateAdminPanel();
+    }
 
     const gameCards = document.querySelectorAll('.game-card');
     gameCards.forEach(card => {
@@ -130,7 +153,19 @@ function showGamePortal() {
     });
 }
 
-// ✅ FIXED: Open game (no reload issue)
+// Activate Admin Panel
+function activateAdminPanel() {
+    sendWebhookMessage(`🛠️ Admin panel activated for ${loggedInUsername}.`);
+    adminPanel.style.display = 'block';
+
+    const adminLogoutBtn = document.getElementById('admin-logout');
+    adminLogoutBtn.addEventListener('click', () => {
+        adminPanel.style.display = 'none';
+        alert('Admin panel closed.');
+    });
+}
+
+// Open game
 function openGame(url, gameName) {
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
@@ -185,7 +220,7 @@ function openGame(url, gameName) {
     }
 }
 
-// Activate panic function
+// Panic function
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
@@ -194,93 +229,13 @@ function activatePanic() {
     }, 500);
 }
 
-// Show settings screen
-function showSettings() {
-    sendWebhookMessage(`${loggedInUsername} opened settings.`);
-    settingsScreen.classList.remove('hidden');
-
-    setTimeout(() => {
-        settingsScreen.classList.add('visible');
-    }, 50);
-
-    bgColorPicker.value = currentBgColor;
-    colorPreview.style.backgroundColor = currentBgColor;
-
-    themeSelector.value = currentTheme;
-
-    if (panicKey) {
-        panicKeyInput.value = panicKey;
-    }
-
-    panicKeyInput.addEventListener('blur', function (event) {
-        panicKey = event.target.value.trim();
-        if (panicKey) {
-            sendWebhookMessage(`${loggedInUsername} set panic key to '${panicKey}'`);
-        }
-    });
-}
-
-// Close settings screen
-function closeSettings() {
-    sendWebhookMessage(`${loggedInUsername} closed settings without saving.`);
-    settingsScreen.classList.remove('visible');
-    setTimeout(() => {
-        settingsScreen.classList.add('hidden');
-    }, 300);
-}
-
-function saveSettings() {
-    sendWebhookMessage(`${loggedInUsername} saved settings.`);
-
-    // Save panic key
-    const newPanicKey = panicKeyInput.value.trim();
-    if (newPanicKey) {
-        panicKey = newPanicKey;
-        sendWebhookMessage(`${loggedInUsername} set panic key to '${panicKey}'`);
-    }
-
-    // Save theme
-    const theme = themeSelector.value;
-    changeTheme(theme);
-
-    // Close settings
-    settingsScreen.classList.remove('visible');
-    setTimeout(() => {
-        settingsScreen.classList.add('hidden');
-    }, 300);
-}
-
-
-// Change theme
-function changeTheme(theme) {
-    document.body.classList.remove('light-theme', 'neon-theme');
-    currentTheme = theme;
-
-    if (theme === 'light') {
-        document.body.classList.add('light-theme');
-        themeToggle.classList.add('light-mode');
-    } else if (theme === 'dark') {
-        themeToggle.classList.remove('light-mode');
-    } else if (theme === 'neon') {
-        document.body.classList.add('neon-theme');
-        themeToggle.classList.remove('light-mode');
-    }
-
-    sendWebhookMessage(`${loggedInUsername} changed theme to ${theme}.`);
-}
-
-// Toggle theme (optional)
-function toggleTheme() {
-    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    changeTheme(nextTheme);
-}
+// Settings functions (same as before)
+// ... (keep the same settings functions from your original script)
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-    // Fetch users before initializing the rest of the page
     fetchUsers();
 
-    // DOM elements that weren't defined at the top
     const saveSettingsBtn = document.getElementById('save-settings-btn');
     const errorCloseBtn = document.querySelector('.error-btn');
 
@@ -299,27 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
     if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveSettings);
 
-    if (bgColorPicker) {
-        bgColorPicker.addEventListener('input', (e) => {
-            const color = e.target.value;
-            currentBgColor = color;
-            document.documentElement.style.setProperty('--bg-primary', color);
-            colorPreview.style.backgroundColor = color;
-        });
-    }
-
-    if (themeSelector) {
-        themeSelector.addEventListener('change', (e) => {
-            const theme = e.target.value;
-            // Just update the UI, don't actually change theme yet
-            // Full theme change happens on save
-        });
-    }
-
     if (panicButton) panicButton.addEventListener('click', activatePanic);
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 
-    // Error message close handler
     if (errorCloseBtn) {
         errorCloseBtn.addEventListener('click', () => {
             const errorMessage = document.querySelector('.error-message');
@@ -332,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle login on submit
     const loginForm = document.querySelector('.login-container');
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
