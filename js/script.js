@@ -8,16 +8,14 @@ const webhookUrl = "https://discord.com/api/webhooks/1369038865804824686/ARuFGJN
 
 // User database
 const users = [
-    { "username": "gurt", "password": "yo" },
+    { "username": "Woh", "password": "Anything" },
     { "username": "qwiki", "password": "252500" },
     { "username": "electron", "password": "0909" },
     { "username": "Genghis", "password": "Khan" },
     { "username": "Vas", "password": "vasisthebestcoder" },
     { "username": "greg", "password": "saker" },
     { "username": "stoj", "password": "2508" }
-];
-
-const adminUsers = ["qwiki", "Genghis", "Vas"];
+]
 
 // DOM elements
 const welcomeContainer = document.getElementById('welcome-container');
@@ -37,25 +35,17 @@ const closeSettingsBtn = document.getElementById('close-settings-btn');
 const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
-const adminButton = document.getElementById('admin-button');
-const adminPanel = document.getElementById('admin-panel');
 
-// Webhook sender
+// Send a webhook message
 function sendWebhookMessage(message) {
-    const messageWithVersion = `${message} : version 4.6`;
     fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: messageWithVersion })
+        body: JSON.stringify({ content: message })
     }).catch(error => console.error("Webhook error:", error));
 }
 
-// Check if user is admin
-function isAdmin() {
-    return adminUsers.includes(loggedInUsername);
-}
-
-// Welcome button click
+// Display login form and hide welcome button
 function showLoginForm() {
     sendWebhookMessage('A user clicked "Welcome My Friend" button.');
     welcomeContainer.classList.add('fade-out');
@@ -66,7 +56,7 @@ function showLoginForm() {
     }, 500);
 }
 
-// Handle login
+// Handle login submission
 function submitLogin() {
     const email = emailInput.value;
     const password = passwordInput.value;
@@ -76,6 +66,7 @@ function submitLogin() {
     if (user) {
         loggedInUsername = user.username;
         sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
+
         loginOverlay.classList.add('fade-out');
         setTimeout(() => {
             loginOverlay.style.display = 'none';
@@ -92,7 +83,7 @@ function submitLogin() {
     }
 }
 
-// Loading screen
+// Show loading screen
 function showLoadingScreen() {
     loadingScreen.classList.remove('hidden');
     document.documentElement.style.setProperty('--bg-color', currentBgColor);
@@ -107,17 +98,11 @@ function showLoadingScreen() {
     }, 2000);
 }
 
-// Game portal
+// Show the game portal after successful login
 function showGamePortal() {
     sendWebhookMessage(`${loggedInUsername} reached game menu.`);
     inGameUI = true;
     gamePortal.classList.remove('hidden');
-
-    if (isAdmin()) {
-        adminButton.style.display = 'block';
-    } else {
-        adminButton.style.display = 'none';
-    }
 
     const gameCards = document.querySelectorAll('.game-card');
     gameCards.forEach(card => {
@@ -135,12 +120,14 @@ function showGamePortal() {
     });
 }
 
-// Open game tab
+// ✅ FIXED: Open game using about:blank technique (embedding game via iframe)
 function openGame(url, gameName) {
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
+    // Open a new tab with about:blank
     const newTab = window.open("about:blank", "_blank");
     if (newTab) {
+        // Inject HTML that includes the game in an iframe
         const gameHtml = `
     <html>
         <head>
@@ -183,6 +170,7 @@ function openGame(url, gameName) {
         </body>
     </html>
 `;
+
         newTab.document.write(gameHtml);
         newTab.document.close();
     } else {
@@ -190,7 +178,7 @@ function openGame(url, gameName) {
     }
 }
 
-// Panic
+// Activate panic function
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
@@ -199,15 +187,19 @@ function activatePanic() {
     }, 500);
 }
 
-// Settings
+// Show settings screen
 function showSettings() {
     sendWebhookMessage(`${loggedInUsername} opened settings.`);
     settingsScreen.classList.remove('hidden');
+
     bgColorPicker.value = currentBgColor;
     colorPreview.style.backgroundColor = currentBgColor;
+
     themeSelector.value = currentTheme;
 
-    if (panicKey) panicKeyInput.value = panicKey;
+    if (panicKey) {
+        panicKeyInput.value = panicKey;
+    }
 
     panicKeyInput.addEventListener('input', function (event) {
         panicKey = event.target.value;
@@ -217,6 +209,7 @@ function showSettings() {
     });
 }
 
+// Close settings screen
 function closeSettings() {
     sendWebhookMessage(`${loggedInUsername} closed settings.`);
     settingsScreen.classList.add('fade-out');
@@ -226,6 +219,7 @@ function closeSettings() {
     }, 500);
 }
 
+// Change theme
 function changeTheme(theme) {
     document.body.classList.remove('light-theme', 'neon-theme');
     currentTheme = theme;
@@ -243,27 +237,13 @@ function changeTheme(theme) {
     sendWebhookMessage(`${loggedInUsername} changed theme to ${theme}.`);
 }
 
+// Toggle theme (optional)
 function toggleTheme() {
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
     changeTheme(nextTheme);
 }
 
-// Admin Panel
-if (adminButton) {
-    adminButton.addEventListener('click', () => {
-        if (isAdmin()) {
-            sendWebhookMessage(`${loggedInUsername} clicked the Admin Panel button.`);
-            alert("Welcome to the Admin Panel, " + loggedInUsername + "!");
-            if (adminPanel) {
-                adminPanel.classList.remove('hidden');
-            }
-        } else {
-            alert("Access denied. You are not an admin.");
-        }
-    });
-}
-
-// Initialize app
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
     welcomeButton.addEventListener('click', showLoginForm);
     loginButton.addEventListener('click', submitLogin);
