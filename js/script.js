@@ -176,12 +176,12 @@ function openGame(url, gameName) {
     }
 }
 
-// Activate panic function
+// Activate panic function (fixed)
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
     setTimeout(() => {
-        window.location.href = "https://www.google.com";
+        window.location.href = "https://www.google.com"; // or any safe redirect URL
     }, 500);
 }
 
