@@ -7,7 +7,7 @@ let panicKey = null;
 const webhookUrl = "https://discord.com/api/webhooks/1369038865804824686/ARuFGJNLGAA47UM9kqocFE6zlFmhPRyxAzEgsy1PM_4FNzktR0gmpJ3KVMuBSN957mpN";
 
 // GitHub Raw JSON URL containing user data
-const githubJsonUrl = "https://raw.githubusercontent.com/vasilytroll/json/refs/heads/main/users.json";
+const githubJsonUrl = "https://raw.githubusercontent.com/vasilytroll/json2/refs/heads/main/users.json";
 
 // User database (empty initially, populated by fetch)
 let users = [];
