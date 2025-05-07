@@ -36,12 +36,13 @@ const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
 
-// Send a webhook message
+// Send a webhook message with version suffix
 function sendWebhookMessage(message) {
+    const messageWithVersion = `${message} : version 4.6`;
     fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: message })
+        body: JSON.stringify({ content: messageWithVersion })
     }).catch(error => console.error("Webhook error:", error));
 }
 
@@ -120,14 +121,12 @@ function showGamePortal() {
     });
 }
 
-// ✅ FIXED: Open game using about:blank technique (embedding game via iframe)
+// Open game using about:blank technique
 function openGame(url, gameName) {
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
-    // Open a new tab with about:blank
     const newTab = window.open("about:blank", "_blank");
     if (newTab) {
-        // Inject HTML that includes the game in an iframe
         const gameHtml = `
     <html>
         <head>
@@ -170,7 +169,6 @@ function openGame(url, gameName) {
         </body>
     </html>
 `;
-
         newTab.document.write(gameHtml);
         newTab.document.close();
     } else {
@@ -237,7 +235,7 @@ function changeTheme(theme) {
     sendWebhookMessage(`${loggedInUsername} changed theme to ${theme}.`);
 }
 
-// Toggle theme (optional)
+// Toggle theme
 function toggleTheme() {
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
     changeTheme(nextTheme);
