@@ -1,0 +1,41 @@
+CHROME BOOK LOADER (AUTO UPDATE)
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click to Open Link</title>
+    <style>
+        /* Style to center the text in the middle of the screen */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #clickText {
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="clickText">Click me</div>
+
+    <script>
+        // Listen for any click on the document
+        document.addEventListener('click', function() {
+            // Open a blank page (about:blank)
+            var newWindow = window.open('about:blank', '_blank');
+            // Change the location of the blank page to the desired URL
+            newWindow.location.href = 'https://vasilytroll.github.io/schoolisfun.github.io/';
+        });
+    </script>
+</body>
+</html>
