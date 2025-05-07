@@ -12,7 +12,7 @@ const users = [
     { "username": "qwiki", "password": "252500" },
     { "username": "electron", "password": "0909" },
     { "username": "Genghis", "password": "Khan" },
-    { "username": "Vas", "password": "vasisthebestcoder" }
+    { "username": "Vas", "password": "vasisthebestcoder" },
     { "username": "greg", "password": "saker" }
 ]
 
