@@ -1,6 +1,29 @@
 CHROME BOOK LOADER (AUTO UPDATE)
 
 
+
+(HOW IT WORKS)
+
+FIND A ONLINE COMPLER;
+
+
+https://onecompiler.com/html
+https://www.programiz.com/html/online-compiler/
+https://www.w3schools.com/html/html_editor.asp
+https://www.onlinegdb.com/online_html_compiler
+https://www.tutorialspoint.com/compilers/online-html-editor.htm
+
+
+THEN RUN THIS SCRIPT AND THATS IT! (or download it then find index in that folder and dubble click and it will open
+a chrome/google file that you can accsess)
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
