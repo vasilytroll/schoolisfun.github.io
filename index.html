@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neutron Star</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="welcome-container" id="welcome-container">
+    <button id="welcome-button" class="welcome-button">
+      <span class="welcome-text">Welcome My Friend</span>
+      <div class="welcome-icon">
+        <i class="fas fa-gamepad"></i>
+      </div>
+    </button>
+  </div>
+
+  <!-- Login Form -->
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-container">
+      <h2>Please Log In</h2>
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" id="email-input" placeholder="Enter your Username" />
+      </div>
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" id="password-input" placeholder="Enter password" />
+      </div>
+      <button id="login-button" class="btn btn-primary">
+        <i class="fas fa-sign-in-alt"></i> Log In
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen hidden">
+    <div class="loader"></div>
+    <div class="loading-text">
+      Please wait for <strong>Neutron Star</strong> to load...
+    </div>
+  </div>
+
+  <!-- Game Portal -->
+  <div id="game-portal" class="game-portal hidden">
+    <div id="settings-tab" class="settings-tab">
+      <i class="fas fa-cog"></i> Settings
+    </div>
+    
+    <header class="portal-header">
+      <h1>Neutron Star Games</h1>
+    </header>
+
+    <div class="game-grid">
+      <div class="game-card" data-url="https://archive.org/details/stick-rpg-complete" data-name="Stick RPG">
+        <div class="game-icon"><i class="fas fa-user-alt"></i></div>
+        <div class="game-info">
+          <h3>Stick RPG</h3>
+          <p>Create your own stick figure adventure</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://1games.io/game/monkey-mart/" data-name="Monkey Mart">
+        <div class="game-icon"><i class="fas fa-store"></i></div>
+        <div class="game-info">
+          <h3>Monkey Mart</h3>
+          <p>Run your own monkey marketplace</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://eaglercraft.com" data-name="Minecraft">
+        <div class="game-icon"><i class="fas fa-cubes"></i></div>
+        <div class="game-info">
+          <h3>Minecraft</h3>
+          <p>Build and explore in this block universe</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://onlinegames.io" data-name="OnlineGames">
+        <div class="game-icon"><i class="fas fa-gamepad"></i></div>
+        <div class="game-info">
+          <h3>OnlineGames</h3>
+          <p>A collection of simple online games</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://sz-games.github.io" data-name="Sz Games">
+        <div class="game-icon"><i class="fas fa-dice"></i></div>
+        <div class="game-info">
+          <h3>Sz Games</h3>
+          <p>More simple online games</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://slopeonline.online/" data-name="Slope">
+        <div class="game-icon"><i class="fas fa-mountain"></i></div>
+        <div class="game-info">
+          <h3>Slope</h3>
+          <p>Roll down an endless slope avoiding obstacles</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://retrobowl.me" data-name="Retro Bowl">
+        <div class="game-icon"><i class="fas fa-football-ball"></i></div>
+        <div class="game-info">
+          <h3>Retro Bowl</h3>
+          <p>A retro football game</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://gamesfrog.com/games/madden" data-name="Madden 7">
+        <div class="game-icon"><i class="fas fa-football-ball"></i></div>
+        <div class="game-info">
+          <h3>Madden 7</h3>
+          <p>Play Madden 7 online</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://crazycattle3dgame.github.io/" data-name="Crazy Cattle 3D">
+        <div class="game-icon"><i class="fas fa-cow"></i></div>
+        <div class="game-info">
+          <h3>Crazy Cattle 3D</h3>
+          <p>Navigate through a 3D world as a crazy cattle</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://www.miniplay.com/game/plants-vs-zombies" data-name="Plants vs Zombies">
+        <div class="game-icon"><i class="fas fa-leaf"></i></div>
+        <div class="game-info">
+          <h3>Plants vs Zombies</h3>
+          <p>Defend your garden from zombies</p>
+        </div>
+      </div>
+
+      <!-- New Games -->
+      <div class="game-card" data-url="https://flappybird.io/" data-name="Flappy Bird">
+        <div class="game-icon"><i class="fas fa-dove"></i></div>
+        <div class="game-info">
+          <h3>Flappy Bird</h3>
+          <p>Fly the bird through pipes without crashing</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://play2048.co/" data-name="2048">
+        <div class="game-icon"><i class="fas fa-th-large"></i></div>
+        <div class="game-info">
+          <h3>2048</h3>
+          <p>Combine numbers to reach the 2048 tile</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://orteil.dashnet.org/cookieclicker/" data-name="Cookie Clicker">
+        <div class="game-icon"><i class="fas fa-cookie"></i></div>
+        <div class="game-info">
+          <h3>Cookie Clicker</h3>
+          <p>Bake as many cookies as you can</p>
+        </div>
+      </div>
+
+      <!-- Your requested new games -->
+      <div class="game-card" data-url="https://eggy-car.github.io/" data-name="Eggy Car">
+        <div class="game-icon"><i class="fas fa-egg"></i></div>
+        <div class="game-info">
+          <h3>Eggy Car</h3>
+          <p>Drive carefully while balancing your egg</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://gamesuperhot.github.io/" data-name="Superhot">
+        <div class="game-icon"><i class="fas fa-crosshairs"></i></div>
+        <div class="game-info">
+          <h3>Superhot</h3>
+          <p>A unique FPS where time moves when you do</p>
+        </div>
+      </div>
+
+      <div class="game-card" data-url="https://blockblastonline.com/" data-name="Block Blast (Old)">
+        <div class="game-icon"><i class="fas fa-th"></i></div>
+        <div class="game-info">
+          <h3>Block Blast (Old)</h3>
+          <p>A classic block puzzle game</p>
+        </div>
+      </div>
+
+    </div>
+
+    <button id="panic-button" class="panic-button">
+      <i class="fas fa-exclamation-triangle"></i> Panic!
+    </button>
+  </div>
+  
+  <!-- Settings Screen -->
+  <div id="settings-screen" class="settings-screen hidden">
+    <div class="settings-container">
+      <h2><i class="fas fa-cog"></i> Settings</h2>
+      
+      <div class="settings-group">
+        <label for="bg-color-picker">Background Color:</label>
+        <input type="color" id="bg-color-picker" value="#121212" />
+        <span class="color-preview"></span>
+      </div>
+      
+      <div class="settings-group">
+        <label for="theme-selector">Theme:</label>
+        <select id="theme-selector">
+          <option value="dark">Dark Theme</option>
+          <option value="light">Light Theme</option>
+          <option value="neon">Neon Theme</option>
+        </select>
+      </div>
+      
+      <div class="settings-group">
+        <label for="panic-key">Set Panic Key:</label>
+        <input type="text" id="panic-key" class="input-field" maxlength="1" placeholder="e.g. P" />
+      </div>
+      
+      <button id="close-settings-btn" class="btn btn-primary">
+        <i class="fas fa-save"></i> Save & Close
+      </button>
+    </div>
+  </div>
+  
+  <!-- Error Message Template -->
+  <div id="error-message-template" class="hidden">
+    <div class="error-message">
+      <div class="error-container">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Pop-up Blocked</h3>
+        <p>Please allow pop-ups for this site to play games.</p>
+        <button class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
