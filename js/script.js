@@ -17,6 +17,27 @@ const users = [
     { "username": "stoj", "password": "2508" }
 ]
 
+// Game URLs
+const gameLinks = [
+    { name: "1v1 LOL", url: "https://1v1.lol/" },
+    { name: "Stacktris", url: "https://stacktris.github.io/" },
+    { name: "Bloons TD 6", url: "https://www.gamenora.com/game/bloons-td-6/" },
+    { name: "Fruit Ninja", url: "https://www.cokogames.com/fruit-ninja-game/play/" },
+    { name: "Retro Bowl", url: "https://retrobowl.college/" },
+    { name: "Tetris", url: "https://tetris.com/play-tetris" },
+    { name: "Slither.io", url: "https://slither.io/" },
+    { name: "Happy Wheels", url: "https://totaljerkface.com/" },
+    { name: "Agar.io", url: "https://agar.io/" },
+    { name: "Basketball Stars", url: "https://www.y8.com/games/basketball_stars" },
+    { name: "Tank Trouble", url: "https://www.tanktrouble.com/" },
+    { name: "Super Mario Bros", url: "https://supermarioemulator.com/" },
+    { name: "Skribbl.io", url: "https://skribbl.io/" },
+    { name: "Among Us", url: "https://playscape.io/among-us" },
+    { name: "Fall Guys", url: "https://fallguys.com/" },
+    { name: "Minecraft Classic", url: "https://classic.minecraft.net/" },
+    { name: "Warcraft 3", url: "https://playwarcraft3.com/" }
+];
+
 // DOM elements
 const welcomeContainer = document.getElementById('welcome-container');
 const welcomeButton = document.getElementById('welcome-button');
