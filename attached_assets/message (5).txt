@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Neutron Star</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      background-color: #121212;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    @keyframes bobbing {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .welcome-button {
+      background-color: #121212;
+      color: white;
+      border: none;
+      width: 100vw;
+      height: 100vh;
+      font-size: 48px;
+      text-align: center;
+      cursor: pointer;
+      animation: bobbing 2s infinite ease-in-out;
+    }
+
+    #login-overlay {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      color: white;
+      text-align: center;
+    }
+
+    #login-overlay input {
+      padding: 15px;
+      margin: 10px;
+      border-radius: 5px;
+      font-size: 18px;
+      width: 250px;
+      border: 2px solid #444;
+      background-color: #222;
+      color: white;
+    }
+
+    #login-overlay button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    #login-overlay button:hover {
+      background-color: #45a049;
+    }
+
+    .game-button {
+      background-color: white;
+      color: black;
+      padding: 20px 40px;
+      font-size: 36px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      margin: 20px;
+      transition: background-color 0.3s;
+    }
+
+    .game-button:hover {
+      background-color: #f2f2f2;
+    }
+
+    .screen-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+
+    .game-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .game-button {
+        width: 80%;
+        font-size: 24px;
+      }
+    }
+
+    #settings-tab {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #fff;
+      color: #000;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 1000;
+    }
+
+    #settings-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #fff;
+      color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #settings-screen h2 {
+      margin-bottom: 20px;
+    }
+
+    #settings-screen input[type="color"], 
+    #settings-screen input[type="text"] {
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    #close-settings-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #close-settings-btn:hover {
+      background-color: #45a049;
+    }
+
+    #panic-button {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      background-color: red;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 10000;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+    }
+
+    #panic-button:hover {
+      background-color: darkred;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="welcome-button" class="welcome-button" onclick="showLoginForm()">Welcome My Friend</button>
+
+  <div id="login-overlay" style="display: none;">
+    <h2>Please Log In</h2>
+    <input type="email" id="email-input" placeholder="Enter your Username" />
+    <input type="password" id="password-input" placeholder="Enter password" />
+    <button onclick="submitLogin()">Log In</button>
+  </div>
+
+  <script>
+    let currentBgColor = "black";
+    let inGameUI = false;
+    let loggedInUsername = "";
+    let panicKey = null;
+
+    const webhookUrl = "https://discord.com/api/webhooks/1369038865804824686/ARuFGJNLGAA47UM9kqocFE6zlFmhPRyxAzEgsy1PM_4FNzktR0gmpJ3KVMuBSN957mpN";
+
+    const users = [
+      { username: "Woh", password: "Anything" },
+      { username: "qwiki", password: "252500" },
+      { username: "electron", password: "0909" },
+      { username: "Genghis", password: "Khan" },
+      { username: "Vas", password: "*PASSWORD_HERE*" }
+    ];
+
+    function sendWebhookMessage(message) {
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: message })
+      }).catch(error => console.error("Webhook error:", error));
+    }
+
+    function showLoginForm() {
+      sendWebhookMessage('A user clicked "Welcome My Friend" button.');
+      document.getElementById('welcome-button').style.display = 'none';
+      document.getElementById('login-overlay').style.display = 'flex';
+    }
+
+    function submitLogin() {
+      const email = document.getElementById('email-input').value;
+      const password = document.getElementById('password-input').value;
+      const user = users.find(u => u.username === email && u.password === password);
+
+      if (user) {
+        loggedInUsername = email.split('@')[0];
+        sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
+        document.getElementById('login-overlay').style.display = 'none';
+        goToNextScreen();
+      } else {
+        sendWebhookMessage(`Failed login attempt for ${email.split('@')[0]}: Incorrect password.`);
+        alert("Incorrect password...");
+      }
+    }
+
+    function goToNextScreen() {
+      sendWebhookMessage(`${loggedInUsername} proceeded to the next screen.`);
+      document.documentElement.style.backgroundColor = currentBgColor;
+      document.body.style.backgroundColor = currentBgColor;
+      document.body.innerHTML = `
+        <div style="color: white; font-size: 36px; text-align: center;">
+          Please wait for <strong>Neutron Star</strong> to load...
+        </div>
+      `;
+      setTimeout(() => {
+        showGameMenu();
+      }, 2000);
+    }
+
+    function showGameMenu() {
+      sendWebhookMessage(`${loggedInUsername} reached game menu.`);
+      inGameUI = true;
+      document.documentElement.style.backgroundColor = currentBgColor;
+      document.body.style.backgroundColor = currentBgColor;
+      document.body.innerHTML = `
+        <div id="settings-tab" onclick="goToSettings()">⚙️ Settings</div>
+        <div class="screen-container">
+          <div class="game-grid">
+            <button class="game-button" onclick="openGame('https://archive.org/details/stick-rpg-complete', 'Stick RPG')">Stick RPG</button>
+            <button class="game-button" onclick="openGame('https://1games.io/game/monkey-mart/', 'Monkey Mart')">Monkey Mart</button>
+            <button class="game-button" onclick="openGame('https://eaglercraft.com', 'Minecraft')">Minecraft</button>
+            <button class="game-button" onclick="openGame('https://onlinegames.io', 'Bad Game But a Lot')">Bad Game But a Lot</button>
+            <button class="game-button" onclick="openGame('https://sz-games.github.io', 'Bad Game But a Lot 2')">Bad Game But a Lot 2</button>
+            <button class="game-button" onclick="openGame('https://slopeonline.online/', 'Slope')">Slope</button>
+          </div>
+        </div>
+        <button id="panic-button" onclick="activatePanic()">Panic!</button>
+      `;
+    }
+
+    function openGame(url, gameName) {
+      sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
+      const newTab = window.open('about:blank');
+      if (newTab) {
+        newTab.document.write(`
+          <html>
+            <head>
+              <style>
+                body, html { margin: 0; padding: 0; overflow: hidden; }
+                iframe { border: none; width: 100vw; height: 100vh; }
+              </style>
+            </head>
+            <body>
+              <iframe src="${url}" allowfullscreen></iframe>
+            </body>
+          </html>
+        `);
+      } else {
+        alert('Pop-up blocked! Allow pop-ups for this site.');
+      }
+    }
+
+    function activatePanic() {
+      sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
+      window.location.href = "https://www.google.com";
+    }
+
+    function goToSettings() {
+      sendWebhookMessage(`${loggedInUsername} opened settings.`);
+      const settingsScreen = document.createElement('div');
+      settingsScreen.id = 'settings-screen';
+      settingsScreen.innerHTML = `
+        <h2>Settings</h2>
+        <label for="bg-color-picker">Background Color:</label>
+        <input type="color" id="bg-color-picker" value="${currentBgColor}" />
+        <br />
+        <label for="panic-key">Set Panic Key:</label>
+        <input type="text" id="panic-key" maxlength="1" placeholder="e.g. P" />
+        <br />
+        <button id="close-settings-btn" onclick="closeSettings()">Close</button>
+      `;
+      document.body.appendChild(settingsScreen);
+
+      document.getElementById('bg-color-picker').addEventListener('input', function (event) {
+        currentBgColor = event.target.value;
+        document.documentElement.style.backgroundColor = currentBgColor;
+        document.body.style.backgroundColor = currentBgColor;
+      });
+
+      document.getElementById('panic-key').addEventListener('input', function (event) {
+        panicKey = event.target.value.toLowerCase();
+        sendWebhookMessage(`${loggedInUsername} set panic key to '${panicKey}'`);
+      });
+    }
+
+    function closeSettings() {
+      sendWebhookMessage(`${loggedInUsername} closed settings.`);
+      const settingsScreen = document.getElementById('settings-screen');
+      if (settingsScreen) settingsScreen.remove();
+    }
+
+    // Listen for key press to trigger panic (if set)
+    document.addEventListener('keydown', function (event) {
+      if (inGameUI && panicKey && event.key.toLowerCase() === panicKey) {
+        activatePanic();
+      }
+    });
+
+    // Add "Enter" key listener for login form
+    document.getElementById('email-input').addEventListener('keypress', function (event) {
+      if (event.key === 'Enter') {
+        submitLogin();
+      }
+    });
+
+    document.getElementById('password-input').addEventListener('keypress', function (event) {
+      if (event.key === 'Enter') {
+        submitLogin();
+      }
+    });
+  </script>
+</body>
+</html>
