@@ -11,7 +11,7 @@ const githubJsonUrl = "https://raw.githubusercontent.com/vasilytroll/json2/refs/
 
 // User database
 let users = [];
-let onlineUsers = []; // To keep track of online users
+let onlineUsers = []; // To keep track of online users (localStorage simulation)
 
 // DOM elements
 const welcomeContainer = document.getElementById('welcome-container');
@@ -31,6 +31,7 @@ const closeSettingsBtn = document.getElementById('close-settings-btn');
 const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
+const saveSettingsBtn = document.getElementById('save-settings-btn');
 
 // Admin dashboard elements (create it dynamically)
 const adminPanel = document.createElement('div');
@@ -57,13 +58,12 @@ userListBox.id = 'user-list-box';
 userListBox.style.display = 'none';
 userListBox.style.position = 'fixed';
 userListBox.style.top = '0';
-userListBox.style.right = '0';  // Changed to position it on the right
-userListBox.style.left = 'auto'; // Removed left
+userListBox.style.right = '0';
 userListBox.style.width = '250px';
 userListBox.style.height = '100vh';
 userListBox.style.backgroundColor = '#111';
 userListBox.style.color = '#0f0';
-userListBox.style.borderLeft = '2px solid #0f0';  // Border on the left
+userListBox.style.borderLeft = '2px solid #0f0';
 userListBox.style.padding = '20px';
 userListBox.style.overflowY = 'auto';
 userListBox.innerHTML = `<h4>Online Users:</h4><ul id="user-list"></ul>`;
@@ -113,9 +113,8 @@ function submitLogin() {
 
     if (user) {
         loggedInUsername = user.username;
-        if (!onlineUsers.includes(loggedInUsername)) {
-            onlineUsers.push(loggedInUsername); // Add to online users
-        }
+        addUserToOnline(loggedInUsername);  // Add to online users (localStorage simulation)
+
         sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
 
         loginOverlay.classList.add('fade-out');
@@ -133,6 +132,24 @@ function submitLogin() {
         }, 2000);
     }
 }
+
+// Add user to online users (localStorage simulation)
+function addUserToOnline(user) {
+    let storedUsers = JSON.parse(localStorage.getItem('onlineUsers')) || [];
+    if (!storedUsers.includes(user)) {
+        storedUsers.push(user);
+        localStorage.setItem('onlineUsers', JSON.stringify(storedUsers));
+    }
+}
+
+// Remove user from online users (when window closes)
+window.addEventListener('beforeunload', () => {
+    if (loggedInUsername) {
+        let storedUsers = JSON.parse(localStorage.getItem('onlineUsers')) || [];
+        storedUsers = storedUsers.filter(u => u !== loggedInUsername);
+        localStorage.setItem('onlineUsers', JSON.stringify(storedUsers));
+    }
+});
 
 // Show loading screen
 function showLoadingScreen() {
@@ -192,10 +209,12 @@ function updateUserList() {
     const userList = document.getElementById('user-list');
     userList.innerHTML = ''; // Clear the current list
 
-    if (onlineUsers.length === 0) {
+    let storedUsers = JSON.parse(localStorage.getItem('onlineUsers')) || [];
+
+    if (storedUsers.length === 0) {
         userList.innerHTML = '<li>No users online.</li>';
     } else {
-        onlineUsers.forEach(user => {
+        storedUsers.forEach(user => {
             const li = document.createElement('li');
             li.textContent = user;
             userList.appendChild(li);
@@ -203,23 +222,8 @@ function updateUserList() {
     }
 }
 
-// Periodically update the online users list every 5 seconds
+// Refresh user list every 5 seconds
 setInterval(updateUserList, 5000);
-
-// Handle the user login and logout
-function handleUserLogin(user) {
-    // Add the logged-in user to the online users list if not already there
-    if (!onlineUsers.includes(user)) {
-        onlineUsers.push(user);
-    }
-    updateUserList();  // Update the user list every time a new user logs in
-}
-
-function handleUserLogout(user) {
-    // Remove the logged-out user from the online users list
-    onlineUsers = onlineUsers.filter(u => u !== user);
-    updateUserList();  // Update the user list every time a user logs out
-}
 
 // Open game
 function openGame(url, gameName) {
@@ -285,84 +289,51 @@ function activatePanic() {
     }, 500);
 }
 
-// Save settings
-function saveSettings() {
-    // Get new settings from inputs (such as theme, background color, etc.)
-    const selectedBgColor = bgColorPicker.value;
-    const selectedTheme = themeSelector.value;
-    const enteredPanicKey = panicKeyInput.value;
-
-    // Save settings (you can store them locally, or you can save them in a server/database)
-    currentBgColor = selectedBgColor;
-    currentTheme = selectedTheme;
-    panicKey = enteredPanicKey;
-
-    // Update the UI based on new settings
-    document.documentElement.style.setProperty('--bg-color', currentBgColor);
-
-    // Apply theme
-    if (currentTheme === 'light') {
-        document.body.classList.remove('dark');
-        document.body.classList.add('light');
-    } else {
-        document.body.classList.remove('light');
-        document.body.classList.add('dark');
-    }
-
-    // Close settings after saving
-    closeSettings();
-
-    // Send a webhook with the settings update
-    sendWebhookMessage(`${loggedInUsername} updated settings: BG Color = ${currentBgColor}, Theme = ${currentTheme}`);
+// Settings screen handlers
+function showSettings() {
+    settingsScreen.classList.remove('hidden');
+    bgColorPicker.value = currentBgColor;
+    themeSelector.value = currentTheme;
+    panicKeyInput.value = panicKey || '';
 }
 
-// Attach save settings event
-const saveSettingsBtn = document.getElementById('save-settings-btn');
-if (saveSettingsBtn) {
-    saveSettingsBtn.addEventListener('click', saveSettings);
+function closeSettings() {
+    settingsScreen.classList.add('hidden');
+}
+
+function toggleTheme() {
+    if (currentTheme === 'light') {
+        currentTheme = 'dark';
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+    } else {
+        currentTheme = 'light';
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+    }
+    themeSelector.value = currentTheme;
+}
+
+// Save settings
+function saveSettings() {
+    currentBgColor = bgColorPicker.value;
+    currentTheme = themeSelector.value;
+    panicKey = panicKeyInput.value;
+    document.documentElement.style.setProperty('--bg-color', currentBgColor);
+    toggleTheme();
+    closeSettings();
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     fetchUsers();
-
-    const saveSettingsBtn = document.getElementById('save-settings-btn');
-    const errorCloseBtn = document.querySelector('.error-btn');
-
     welcomeButton.addEventListener('click', showLoginForm);
     loginButton.addEventListener('click', submitLogin);
-
-    emailInput.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') submitLogin();
-    });
-
-    passwordInput.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') submitLogin();
-    });
-
-    if (settingsTab) settingsTab.addEventListener('click', showSettings);
-    if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
-
+    settingsTab.addEventListener('click', showSettings);
+    closeSettingsBtn.addEventListener('click', closeSettings);
+    saveSettingsBtn.addEventListener('click', saveSettings);
     if (panicButton) panicButton.addEventListener('click', activatePanic);
-    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 
-    if (errorCloseBtn) {
-        errorCloseBtn.addEventListener('click', () => {
-            const errorMessage = document.querySelector('.error-message');
-            if (errorMessage) {
-                errorMessage.classList.remove('visible');
-                setTimeout(() => {
-                    errorMessage.classList.add('hidden');
-                }, 300);
-            }
-        });
-    }
-
-    const loginForm = document.querySelector('.login-container');
-    if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            submitLogin();
-        });
-    }
+    emailInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') submitLogin(); });
+    passwordInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') submitLogin(); });
 });
