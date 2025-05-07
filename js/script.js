@@ -118,55 +118,13 @@ function showGamePortal() {
 
 function openGame(url, gameName) {
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
-    const newTab = window.open("about:blank", "_blank");
-    if (newTab) {
-        const gameHtml = `
-            <html>
-                <head>
-                    <title>${gameName}</title>
-                    <style>
-                        body {
-                            margin: 0;
-                            background: #000;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            height: 100vh;
-                            overflow: hidden;
-                        }
-                        .loader {
-                            font-family: monospace;
-                            color: #0f0;
-                            font-size: 1.5em;
-                            animation: blink 1s infinite;
-                        }
-                        iframe {
-                            border: none;
-                            width: 100vw;
-                            height: 100vh;
-                        }
-                        @keyframes blink {
-                            0%, 100% { opacity: 1; }
-                            50% { opacity: 0; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="loader">Loading <strong>${gameName}</strong>...</div>
-                    <iframe src="${url}" onload="document.querySelector('.loader').style.display='none';"></iframe>
-                </body>
-            </html>`;
-        newTab.document.write(gameHtml);
-        newTab.document.close();
-    } else {
-        alert("Please allow popups for this site to play the game.");
-    }
+    window.location.href = url;
 }
 
 // Panic logic
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
-    window.close();
+    window.location.href = "https://www.google.com";
 }
 
 // Settings
@@ -255,3 +213,4 @@ document.addEventListener("DOMContentLoaded", () => {
     if (panicButton) panicButton.addEventListener("click", activatePanic);
     if (themeToggle) themeToggle.addEventListener("click", toggleTheme);
 });
+
