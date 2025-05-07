@@ -129,47 +129,48 @@ function openGame(url, gameName) {
     if (newTab) {
         // Inject HTML that includes the game in an iframe
         const gameHtml = `
-            <html>
-                <head>
-                    <title>${gameName}</title>
-                    <style>
-                        body {
-                            margin: 0;
-                            background: #000;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            height: 100vh;
-                            overflow: hidden;
-                        }
-                        .loader {
-                            position: absolute;
-                            top: 50%;
-                            left: 50%;
-                            transform: translate(-50%, -50%);
-                            font-family: monospace;
-                            color: #0f0;
-                            font-size: 1.5em;
-                            animation: blink 1s infinite;
-                        }
-                        iframe {
-                            border: none;
-                            width: 100vw;
-                            height: 100vh;
-                        }
-                        @keyframes blink {
-                            0% { opacity: 1; }
-                            50% { opacity: 0; }
-                            100% { opacity: 1; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="loader">Loading <strong>${gameName}</strong>...</div>
-                    <iframe src="" onload="this.previousElementSibling.style.display='none'; this.src='${url}';"></iframe>
-                </body>
-            </html>
-        `;
+    <html>
+        <head>
+            <title>${gameName}</title>
+            <style>
+                body {
+                    margin: 0;
+                    background: #000;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    overflow: hidden;
+                }
+                .loader {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    font-family: monospace;
+                    color: #0f0;
+                    font-size: 1.5em;
+                    animation: blink 1s infinite;
+                }
+                iframe {
+                    border: none;
+                    width: 100vw;
+                    height: 100vh;
+                }
+                @keyframes blink {
+                    0% { opacity: 1; }
+                    50% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="loader">Loading <strong>${gameName}</strong>...</div>
+            <iframe src="${url}" onload="document.querySelector('.loader').style.display='none';"></iframe>
+        </body>
+    </html>
+`;
+
         newTab.document.write(gameHtml);
         newTab.document.close();
     } else {
