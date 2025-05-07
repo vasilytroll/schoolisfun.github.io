@@ -181,7 +181,7 @@ function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
     setTimeout(() => {
-        window.close;
+        window.close();
     }
 }
 
