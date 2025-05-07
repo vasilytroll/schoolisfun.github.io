@@ -181,8 +181,8 @@ function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
     setTimeout(() => {
-        window.location.href = "https://www.google.com"; // or any safe redirect URL
-    }, 500);
+        window.close;
+    }
 }
 
 // Show settings screen
