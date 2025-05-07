@@ -128,15 +128,19 @@ function activatePanic() {
     // Attempt to close the window
     window.close();
 
-    // If it fails, fallback: redirect to a "safe" page
+    // Fallback if window.close() doesn't work
     setTimeout(() => {
+        if (window.closed) {
+            return; // Tab closed successfully
+        }
+
         document.body.innerHTML = `
             <div style="display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;font-family:sans-serif;">
                 <h2>🔒 You are now safe.</h2>
-                <p>Please close this tab manually.</p>
+                <p>If your browser blocked the automatic tab close, please close this tab manually.</p>
             </div>
         `;
-    }, 300);
+    }, 300); // Slight delay to allow time for window.close to attempt
 }
 
 // Settings
@@ -225,6 +229,3 @@ document.addEventListener("DOMContentLoaded", () => {
     if (panicButton) panicButton.addEventListener("click", activatePanic);
     if (themeToggle) themeToggle.addEventListener("click", toggleTheme);
 });
-
-
-
