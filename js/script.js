@@ -30,7 +30,57 @@ const closeSettingsBtn = document.getElementById('close-settings-btn');
 const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
+function handleAdminVisibility() {
+    const allowedUsers = ["qwiki", "Genghis", "Vas"];
+    const adminButton = document.getElementById("admin-panel-button");
 
+    if (!allowedUsers.includes(loggedInUsername)) {
+        adminButton.style.display = "none";
+    } else {
+        adminButton.style.display = "inline-block"; // or "block" depending on your layout
+    }
+}
+ // Toggle the admin panel visibility when the button is clicked
+      document.getElementById("admin-panel-button").addEventListener("click", function() {
+        const panel = document.getElementById("admin-panel");
+        panel.style.display = (panel.style.display === "block") ? "none" : "block";
+      });
+
+      // Firebase and redirect logic as before
+      const firebaseConfig = {
+        apiKey: "AIzaSyDUE1Ek5Kl09_EFCqpcOylJ0K57NK2Tclw",
+        authDomain: "thing-3e66e.firebaseapp.com",
+        databaseURL: "https://thing-3e66e-default-rtdb.firebaseio.com",
+        projectId: "thing-3e66e",
+        storageBucket: "thing-3e66e.appspot.com",
+        messagingSenderId: "934769419903",
+        appId: "1:934769419903:web:734bd6213b3b8eb3d2014a",
+        measurementId: "G-FBTD02E8T6"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+      const redirectRef = db.ref("redirect");
+
+// Watch the "redirect" flag in the database
+redirectRef.on("value", snapshot => {
+    const shouldRedirect = snapshot.val();
+    // Check if the logged-in user is not in the allowed list
+    const allowedUsers = ["qwiki", "Genghis", "Vas"];
+    if (shouldRedirect && !allowedUsers.includes(loggedInUsername) && window.location.pathname !== "/maintenance.html") {
+        window.location.href = "/maintenance.html";
+    }
+});
+
+
+      // Toggle the redirect flag when admin presses the button
+      function toggleRedirect() {
+        redirectRef.once("value").then(snapshot => {
+          const current = snapshot.val();
+          redirectRef.set(!current);
+        });
+      }
 // Send a webhook message
 function sendWebhookMessage(message) {
     fetch(webhookUrl, {
@@ -76,6 +126,19 @@ function submitLogin() {
     if (user) {
         loggedInUsername = user.username;
         sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
+        if (user) {
+            loggedInUsername = user.username;
+            sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
+
+            handleAdminVisibility(); // ← call the new function here
+
+            loginOverlay.classList.add('fade-out');
+            setTimeout(() => {
+                loginOverlay.style.display = 'none';
+                showLoadingScreen();
+            }, 500);
+        }
+
 
         loginOverlay.classList.add('fade-out');
         setTimeout(() => {
