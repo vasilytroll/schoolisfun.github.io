@@ -1,16 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neutron Star</title>
-   <p>made by vas, qwqki, and genghis</p>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/neutron.css">
-</head>
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neutron Star</title>
+    <p>made by vas, qwqki, and genghis</p>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/neutron.css">
+    <style>
+      /* Style for Admin Panel */
+      #admin-panel-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px;
+        background-color: #333;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      #admin-panel {
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        background-color: #444;
+        color: white;
+        width: 200px;
+        padding: 10px;
+        display: none;
+        border-radius: 5px;
+      }
+
+      #admin-panel button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+        border-radius: 5px;
+      }
+
+      /* Hover Effects */
+      #admin-panel-button:hover, #admin-panel button:hover {
+        background-color: #555;
+      }
+    </style>
+  </head>
+  <body>
+
+  
+
+  </body>
+  </html>
+
 <body>
   <div class="welcome-container" id="welcome-container">
     <button id="welcome-button" class="welcome-button">
@@ -53,6 +104,13 @@
 
     <!-- Game Portal -->
   <div id="game-portal" class="game-portal hidden">
+    <!-- Admin Panel Button -->
+    <button id="admin-panel-button">Admin Panel</button>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel">
+      <button onclick="toggleRedirect()">Shutdown</button>
+    </div>
     <div id="settings-tab" class="settings-tab">
       <i class="fas fa-cog"></i> Settings
     </div>
