@@ -74,13 +74,13 @@ redirectRef.on("value", snapshot => {
 });
 
 
-      // Toggle the redirect flag when admin presses the button
-      function toggleRedirect() {
-        redirectRef.once("value").then(snapshot => {
-          const current = snapshot.val();
-          redirectRef.set(!current);
-        });
-      }
+function toggleRedirect() {
+    redirectRef.once("value").then(snapshot => {
+        const current = snapshot.val();
+        redirectRef.set(!current);
+        sendWebhookMessage(`${loggedInUsername || "Unknown"} toggled redirect flag to ${!current}.`);
+    });
+}
 // Send a webhook message
 function sendWebhookMessage(message) {
     fetch(webhookUrl, {
