@@ -9,9 +9,8 @@ const webhookUrl = "https://discord.com/api/webhooks/1369038865804824686/ARuFGJN
 // GitHub Raw JSON URL containing user data
 const githubJsonUrl = "https://raw.githubusercontent.com/vasilytroll/json2/refs/heads/main/users.json";
 
-// User database
+// User database (empty initially, populated by fetch)
 let users = [];
-let onlineUsers = []; // To keep track of online users (localStorage simulation)
 
 // DOM elements
 const welcomeContainer = document.getElementById('welcome-container');
@@ -31,45 +30,8 @@ const closeSettingsBtn = document.getElementById('close-settings-btn');
 const colorPreview = document.querySelector('.color-preview');
 const panicButton = document.getElementById('panic-button');
 const themeToggle = document.getElementById('theme-toggle');
-const saveSettingsBtn = document.getElementById('save-settings-btn');
 
-// Admin dashboard elements (create it dynamically)
-const adminPanel = document.createElement('div');
-adminPanel.id = 'admin-panel';
-adminPanel.style.display = 'none';
-adminPanel.style.position = 'fixed';
-adminPanel.style.top = '20px';
-adminPanel.style.right = '20px';
-adminPanel.style.padding = '20px';
-adminPanel.style.backgroundColor = '#222';
-adminPanel.style.color = '#fff';
-adminPanel.style.border = '2px solid #0f0';
-adminPanel.style.borderRadius = '10px';
-adminPanel.innerHTML = `
-    <h3>Admin Panel</h3>
-    <p>Welcome, Admin!</p>
-    <button id="open-panel-btn">Open Panel</button>
-`;
-document.body.appendChild(adminPanel);
-
-// User List Box (create it dynamically)
-const userListBox = document.createElement('div');
-userListBox.id = 'user-list-box';
-userListBox.style.display = 'none';
-userListBox.style.position = 'fixed';
-userListBox.style.top = '0';
-userListBox.style.right = '0';
-userListBox.style.width = '250px';
-userListBox.style.height = '100vh';
-userListBox.style.backgroundColor = '#111';
-userListBox.style.color = '#0f0';
-userListBox.style.borderLeft = '2px solid #0f0';
-userListBox.style.padding = '20px';
-userListBox.style.overflowY = 'auto';
-userListBox.innerHTML = `<h4>Online Users:</h4><ul id="user-list"></ul>`;
-document.body.appendChild(userListBox);
-
-// Send webhook message
+// Send a webhook message
 function sendWebhookMessage(message) {
     fetch(webhookUrl, {
         method: "POST",
@@ -83,14 +45,14 @@ async function fetchUsers() {
     try {
         const response = await fetch(githubJsonUrl);
         const data = await response.json();
-        users = data.users;
+        users = data.users;  // Assume the JSON structure contains a "users" array
         console.log('Users fetched:', users);
     } catch (error) {
         console.error("Failed to fetch users:", error);
     }
 }
 
-// Show login form
+// Display login form and hide welcome button
 function showLoginForm() {
     sendWebhookMessage('A user clicked "Welcome My Friend" button.');
     welcomeContainer.classList.add('fade-out');
@@ -104,7 +66,7 @@ function showLoginForm() {
     }, 500);
 }
 
-// Handle login
+// Handle login submission
 function submitLogin() {
     const email = emailInput.value;
     const password = passwordInput.value;
@@ -113,8 +75,6 @@ function submitLogin() {
 
     if (user) {
         loggedInUsername = user.username;
-        addUserToOnline(loggedInUsername);  // Add to online users (localStorage simulation)
-
         sendWebhookMessage(`${loggedInUsername} successfully logged in.`);
 
         loginOverlay.classList.add('fade-out');
@@ -133,24 +93,6 @@ function submitLogin() {
     }
 }
 
-// Add user to online users (localStorage simulation)
-function addUserToOnline(user) {
-    let storedUsers = JSON.parse(localStorage.getItem('onlineUsers')) || [];
-    if (!storedUsers.includes(user)) {
-        storedUsers.push(user);
-        localStorage.setItem('onlineUsers', JSON.stringify(storedUsers));
-    }
-}
-
-// Remove user from online users (when window closes)
-window.addEventListener('beforeunload', () => {
-    if (loggedInUsername) {
-        let storedUsers = JSON.parse(localStorage.getItem('onlineUsers')) || [];
-        storedUsers = storedUsers.filter(u => u !== loggedInUsername);
-        localStorage.setItem('onlineUsers', JSON.stringify(storedUsers));
-    }
-});
-
 // Show loading screen
 function showLoadingScreen() {
     loadingScreen.classList.remove('hidden');
@@ -166,15 +108,11 @@ function showLoadingScreen() {
     }, 2000);
 }
 
-// Show game portal
+// Show the game portal after successful login
 function showGamePortal() {
     sendWebhookMessage(`${loggedInUsername} reached game menu.`);
     inGameUI = true;
     gamePortal.classList.remove('hidden');
-
-    if (loggedInUsername.toLowerCase() === 'qwiki') {
-        activateAdminPanel();
-    }
 
     const gameCards = document.querySelectorAll('.game-card');
     gameCards.forEach(card => {
@@ -192,40 +130,7 @@ function showGamePortal() {
     });
 }
 
-// Activate Admin Panel
-function activateAdminPanel() {
-    sendWebhookMessage(`🛠️ Admin panel activated for ${loggedInUsername}.`);
-    adminPanel.style.display = 'block';
-
-    const openPanelBtn = document.getElementById('open-panel-btn');
-    openPanelBtn.addEventListener('click', () => {
-        userListBox.style.display = userListBox.style.display === 'none' ? 'block' : 'none';
-        updateUserList();
-    });
-}
-
-// Update the user list box dynamically
-function updateUserList() {
-    const userList = document.getElementById('user-list');
-    userList.innerHTML = ''; // Clear the current list
-
-    let storedUsers = JSON.parse(localStorage.getItem('onlineUsers')) || [];
-
-    if (storedUsers.length === 0) {
-        userList.innerHTML = '<li>No users online.</li>';
-    } else {
-        storedUsers.forEach(user => {
-            const li = document.createElement('li');
-            li.textContent = user;
-            userList.appendChild(li);
-        });
-    }
-}
-
-// Refresh user list every 5 seconds
-setInterval(updateUserList, 5000);
-
-// Open game
+// ✅ FIXED: Open game (no reload issue)
 function openGame(url, gameName) {
     sendWebhookMessage(`🎮 ${loggedInUsername} clicked on game: ${gameName}`);
 
@@ -280,7 +185,7 @@ function openGame(url, gameName) {
     }
 }
 
-// Panic function
+// Activate panic function
 function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
@@ -289,51 +194,150 @@ function activatePanic() {
     }, 500);
 }
 
-// Settings screen handlers
+// Show settings screen
 function showSettings() {
+    sendWebhookMessage(`${loggedInUsername} opened settings.`);
     settingsScreen.classList.remove('hidden');
+
+    setTimeout(() => {
+        settingsScreen.classList.add('visible');
+    }, 50);
+
     bgColorPicker.value = currentBgColor;
+    colorPreview.style.backgroundColor = currentBgColor;
+
     themeSelector.value = currentTheme;
-    panicKeyInput.value = panicKey || '';
-}
 
-function closeSettings() {
-    settingsScreen.classList.add('hidden');
-}
-
-function toggleTheme() {
-    if (currentTheme === 'light') {
-        currentTheme = 'dark';
-        document.body.classList.remove('light');
-        document.body.classList.add('dark');
-    } else {
-        currentTheme = 'light';
-        document.body.classList.remove('dark');
-        document.body.classList.add('light');
+    if (panicKey) {
+        panicKeyInput.value = panicKey;
     }
-    themeSelector.value = currentTheme;
+
+    panicKeyInput.addEventListener('blur', function (event) {
+        panicKey = event.target.value.trim();
+        if (panicKey) {
+            sendWebhookMessage(`${loggedInUsername} set panic key to '${panicKey}'`);
+        }
+    });
 }
 
-// Save settings
+// Close settings screen
+function closeSettings() {
+    sendWebhookMessage(`${loggedInUsername} closed settings without saving.`);
+    settingsScreen.classList.remove('visible');
+    setTimeout(() => {
+        settingsScreen.classList.add('hidden');
+    }, 300);
+}
+
 function saveSettings() {
-    currentBgColor = bgColorPicker.value;
-    currentTheme = themeSelector.value;
-    panicKey = panicKeyInput.value;
-    document.documentElement.style.setProperty('--bg-color', currentBgColor);
-    toggleTheme();
-    closeSettings();
+    sendWebhookMessage(`${loggedInUsername} saved settings.`);
+
+    // Save panic key
+    const newPanicKey = panicKeyInput.value.trim();
+    if (newPanicKey) {
+        panicKey = newPanicKey;
+        sendWebhookMessage(`${loggedInUsername} set panic key to '${panicKey}'`);
+    }
+
+    // Save theme
+    const theme = themeSelector.value;
+    changeTheme(theme);
+
+    // Close settings
+    settingsScreen.classList.remove('visible');
+    setTimeout(() => {
+        settingsScreen.classList.add('hidden');
+    }, 300);
+}
+
+
+// Change theme
+function changeTheme(theme) {
+    document.body.classList.remove('light-theme', 'neon-theme');
+    currentTheme = theme;
+
+    if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        themeToggle.classList.add('light-mode');
+    } else if (theme === 'dark') {
+        themeToggle.classList.remove('light-mode');
+    } else if (theme === 'neon') {
+        document.body.classList.add('neon-theme');
+        themeToggle.classList.remove('light-mode');
+    }
+
+    sendWebhookMessage(`${loggedInUsername} changed theme to ${theme}.`);
+}
+
+// Toggle theme (optional)
+function toggleTheme() {
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    changeTheme(nextTheme);
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Fetch users before initializing the rest of the page
     fetchUsers();
+
+    // DOM elements that weren't defined at the top
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
+    const errorCloseBtn = document.querySelector('.error-btn');
+
     welcomeButton.addEventListener('click', showLoginForm);
     loginButton.addEventListener('click', submitLogin);
-    settingsTab.addEventListener('click', showSettings);
-    closeSettingsBtn.addEventListener('click', closeSettings);
-    saveSettingsBtn.addEventListener('click', saveSettings);
-    if (panicButton) panicButton.addEventListener('click', activatePanic);
 
-    emailInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') submitLogin(); });
-    passwordInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') submitLogin(); });
+    emailInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') submitLogin();
+    });
+
+    passwordInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') submitLogin();
+    });
+
+    if (settingsTab) settingsTab.addEventListener('click', showSettings);
+    if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
+    if (saveSettingsBtn) saveSettingsBtn.addEventListener('click', saveSettings);
+
+    if (bgColorPicker) {
+        bgColorPicker.addEventListener('input', (e) => {
+            const color = e.target.value;
+            currentBgColor = color;
+            document.documentElement.style.setProperty('--bg-primary', color);
+            colorPreview.style.backgroundColor = color;
+        });
+    }
+
+    if (themeSelector) {
+        themeSelector.addEventListener('change', (e) => {
+            const theme = e.target.value;
+            // Just update the UI, don't actually change theme yet
+            // Full theme change happens on save
+        });
+    }
+
+    if (panicButton) panicButton.addEventListener('click', activatePanic);
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+
+    // Error message close handler
+    if (errorCloseBtn) {
+        errorCloseBtn.addEventListener('click', () => {
+            const errorMessage = document.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.classList.remove('visible');
+                setTimeout(() => {
+                    errorMessage.classList.add('hidden');
+                }, 300);
+            }
+        });
+    }
+
+    // Handle login on submit
+    const loginForm = document.querySelector('.login-container');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            submitLogin();
+        });
+    }
 });
