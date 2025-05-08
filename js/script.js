@@ -253,7 +253,7 @@ function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
     setTimeout(() => {
-        window.location.href = "https://www.google.com";
+        window.location.href = "https://commonlit.org/en/user/login";
     }, 500);
 }
 
