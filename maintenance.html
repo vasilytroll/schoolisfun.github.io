@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Maintenance</title>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <style>
+    /* Hides the button */
+    button {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Neutron Star Games is currently down for maintenance</h1>
+  <p>Please check back later.</p>
+
+  <!-- Admin Panel Button -->
+  <button onclick="toggleRedirect()">Toggle Redirect</button>
+  <!-- Removed the status paragraph -->
+  <!-- <p id="status">Checking status...</p> -->
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDUE1Ek5Kl09_EFCqpcOylJ0K57NK2Tclw",
+      authDomain: "thing-3e66e.firebaseapp.com",
+      databaseURL: "https://thing-3e66e-default-rtdb.firebaseio.com",
+      projectId: "thing-3e66e",
+      storageBucket: "thing-3e66e.appspot.com",
+      messagingSenderId: "934769419903",
+      appId: "1:934769419903:web:734bd6213b3b8eb3d2014a",
+      measurementId: "G-FBTD02E8T6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const redirectRef = db.ref("redirect");
+
+    redirectRef.on("value", snapshot => {
+      const shouldRedirect = snapshot.val();
+
+      // Removed status text update
+      // document.getElementById("status").innerText = shouldRedirect ? "🔁 Redirect is ON" : "✅ Redirect is OFF";
+
+      if (!shouldRedirect && window.location.pathname === "/maintenance.html") {
+        window.location.href = "/";
+      }
+    });
+
+    function toggleRedirect() {
+      redirectRef.once("value").then(snapshot => {
+        const current = snapshot.val();
+        redirectRef.set(!current);
+      });
+    }
+  </script>
+</body>
+</html>
