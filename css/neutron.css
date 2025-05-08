@@ -1533,7 +1533,30 @@ body.neon-theme::before {
   .theme-toggle, .settings-tab {
     top: 15px;
   }
-  
+  /* Add this in your CSS */
+  #maintenance-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      display: none; /* Initially hidden */
+  }
+
+  .maintenance-message {
+      text-align: center;
+      font-size: 2rem;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      border-radius: 10px;
+  }
+
   .theme-toggle {
     right: 15px;
     width: 70px;
