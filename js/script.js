@@ -74,12 +74,11 @@ redirectRef.on("value", snapshot => {
 });
 
 
-function toggleRedirect() {
-    redirectRef.once("value").then(snapshot => {
-        const current = snapshot.val();
-        redirectRef.set(!current);
-        sendWebhookMessage(`${loggedInUsername || "Unknown"} toggled redirect flag to ${!current}.`);
-    });
+toggleRedirect() {
+        redirectRef.once("value").then(snapshot => {
+          const current = snapshot.val();
+          redirectRef.set(!current);
+        });
 }
 // Send a webhook message
 function sendWebhookMessage(message) {
