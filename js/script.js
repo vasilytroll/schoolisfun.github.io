@@ -74,12 +74,13 @@ redirectRef.on("value", snapshot => {
 });
 
 
-toggleRedirect() {
+      // Toggle the redirect flag when admin presses the button
+      function toggleRedirect() {
         redirectRef.once("value").then(snapshot => {
           const current = snapshot.val();
           redirectRef.set(!current);
         });
-}
+      }
 // Send a webhook message
 function sendWebhookMessage(message) {
     fetch(webhookUrl, {
@@ -252,6 +253,7 @@ function activatePanic() {
     sendWebhookMessage(`${loggedInUsername} activated the PANIC button!`);
     document.body.classList.add('fade-out');
     setTimeout(() => {
+        window.location.href = "https://www.google.com";
         window.location.href = "https://commonlit.org/en/user/login";
     }, 500);
 }
