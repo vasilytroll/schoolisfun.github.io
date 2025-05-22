@@ -69,7 +69,7 @@ redirectRef.on("value", snapshot => {
     // Check if the logged-in user is not in the allowed list
     const allowedUsers = ["qwiki", "Genghis", "Vas"];
     if (shouldRedirect && !allowedUsers.includes(loggedInUsername) && window.location.pathname !== "/maintenance.html") {
-       
+        
     }
 });
 
